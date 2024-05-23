@@ -1,18 +1,22 @@
 from dataclasses import dataclass
 from typing import List, Any, Optional
 
-from zenmoney.helpers import from_list, to_class, from_int
-from zenmoney.models.account import Account
-from zenmoney.models.budget import Budget
-from zenmoney.models.company import Company
-from zenmoney.models.country import Country
-from zenmoney.models.instrument import Instrument
-from zenmoney.models.merchant import Merchant
-from zenmoney.models.reminder import Reminder
-from zenmoney.models.reminder_marker import ReminderMarker
-from zenmoney.models.tag import Tag
-from zenmoney.models.transaction import Transaction
-from zenmoney.models.user import User
+from .helpers import from_list, to_class, from_int
+from .account import Account
+from .budget import Budget
+from .company import Company
+from .country import Country
+from .instrument import Instrument
+from .merchant import Merchant
+from .reminder import Reminder
+from .reminder_marker import ReminderMarker
+from .tag import Tag
+from .transaction import Transaction
+from .user import User
+
+
+def remove_empty_attributes(data: dict) -> dict:
+    return {k: v for k, v in data.items() if v not in [[], {}]}
 
 
 @dataclass
@@ -48,6 +52,7 @@ class Diff:
         transaction = from_list(Transaction.from_dict, obj.get("transaction"))
         reminderMarker = from_list(ReminderMarker.from_dict, obj.get("reminderMarker"))
         serverTimestamp = from_int(obj.get("serverTimestamp"))
+        print(obj.get("currentClientTimestamp"))
         currentClientTimestamp = from_int(obj.get("currentClientTimestamp"))
         return Diff(
             serverTimestamp,
@@ -80,4 +85,5 @@ class Diff:
         result["instrument"] = from_list(lambda x: to_class(Instrument, x), self.instrument)
         result["transaction"] = from_list(lambda x: to_class(Transaction, x), self.transaction)
         result["reminderMarker"] = from_list(lambda x: to_class(ReminderMarker, x), self.reminderMarker)
-        return result
+        # todo подумать как изменить этот кусок кода, чтобы формировать dict уже по единому алгоритму
+        return remove_empty_attributes(data=result)

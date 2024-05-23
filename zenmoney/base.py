@@ -1,6 +1,6 @@
 import requests
 
-from zenmoney.exception import ZenmoneyError
+from .exception import ZenmoneyError
 
 
 class BaseZenmoneyRequest(object):

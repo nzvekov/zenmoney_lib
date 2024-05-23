@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Any
 
-from zenmoney.helpers import from_int, from_float, from_str, to_float
+from .helpers import from_int, from_float, from_str, to_float
 
 
 @dataclass

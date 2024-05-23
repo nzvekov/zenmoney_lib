@@ -5,9 +5,9 @@ from typing import Optional
 
 import requests
 
-from zenmoney.base import BaseZenmoneyRequest
-from zenmoney.constant import API_URL
-from zenmoney.exception import ZenmoneyError
+from .base import BaseZenmoneyRequest
+from .constant import API_URL
+from .exception import ZenmoneyError
 
 URI_AUTH = API_URL + '/oauth2/authorize/'
 URI_TOKEN = API_URL + '/oauth2/token/'

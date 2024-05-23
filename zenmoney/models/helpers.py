@@ -1,4 +1,4 @@
-from enum import Enum
+from models.enum import Enum
 from typing import List, Any, TypeVar, Callable, Type, cast
 from datetime import datetime
 
@@ -8,7 +8,7 @@ EnumT = TypeVar("EnumT", bound=Enum)
 
 
 def from_int(value: Any) -> int:
-    if not isinstance(value, int) or isinstance(value, bool):
+    if value and (not isinstance(value, int) or isinstance(value, bool)):
         raise TypeError(f"Expected int, got {type(value).__name__}")
     return value
 

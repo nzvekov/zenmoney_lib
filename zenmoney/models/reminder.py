@@ -3,8 +3,8 @@ from datetime import datetime
 from typing import List, Optional, Any
 from uuid import UUID
 
-from zenmoney.enum import Interval
-from zenmoney.helpers import (
+from .enum import Interval
+from .helpers import (
     from_int,
     from_float,
     from_bool,

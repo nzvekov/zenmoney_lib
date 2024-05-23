@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Optional, Any
 from uuid import UUID
 
-from zenmoney.helpers import from_int, from_bool, from_union, from_none, from_datetime
+from models.helpers import from_int, from_bool, from_union, from_none, from_datetime
 
 
 @dataclass

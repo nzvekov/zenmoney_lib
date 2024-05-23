@@ -1,6 +1,6 @@
-from zenmoney.base import BaseZenmoneyRequest
-from zenmoney.constant import API_URL
-from zenmoney.models.diff import Diff
+from .base import BaseZenmoneyRequest
+from .constant import API_URL
+from models.diff import Diff
 
 
 class ZenmoneyRequestRaw(BaseZenmoneyRequest):
