@@ -1,9 +1,7 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Any
 
-from typing_extensions import Any
-
-from zenmoney.helpers import from_str, from_int, from_bool, from_none, from_union
+from .helpers import from_str, from_int, from_bool, from_none, from_union
 
 
 @dataclass

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Optional, Any
 from uuid import UUID
 
-from zenmoney.helpers import from_int, from_none, from_str, from_union, from_bool, is_type
+from .helpers import from_int, from_none, from_str, from_union, from_bool, is_type
 
 
 @dataclass
