@@ -3,8 +3,8 @@ from datetime import datetime
 from typing import Optional, List, Any
 from uuid import UUID
 
-from zenmoney.enum import BalanceCorrectionType, Interval, TypeEnum
-from zenmoney.helpers import (
+from models.enum import BalanceCorrectionType, Interval, TypeEnum
+from models.helpers import (
     from_int,
     from_str,
     from_bool,
