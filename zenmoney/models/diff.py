@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import List, Any, Optional
 
+from utils import check_object_class_name_list
 from .deletion import Deletion
 from .helpers import from_list, to_class, from_int
 from .account import Account
@@ -37,6 +38,13 @@ class Diff:
     reminderMarker: Optional[List[ReminderMarker]]
     deletion: Optional[List[Deletion]]
     forceFetch: Optional[List[str]]
+
+    def __post_init__(self):
+        if self.forceFetch and not isinstance(self.forceFetch, list):
+            raise TypeError(f"Expected list, got {type(self.forceFetch).__name__}")
+
+        for obj in self.forceFetch:
+            check_object_class_name_list(obj)
 
     @staticmethod
     def from_dict(obj: Any) -> 'Diff':
