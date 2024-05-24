@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import List, Any, Optional
 
+from .deletion import Deletion
 from .helpers import from_list, to_class, from_int
 from .account import Account
 from .budget import Budget
@@ -34,6 +35,8 @@ class Diff:
     instrument: Optional[List[Instrument]]
     transaction: Optional[List[Transaction]]
     reminderMarker: Optional[List[ReminderMarker]]
+    deletion: Optional[List[Deletion]]
+    forceFetch: Optional[List[str]]
 
     @staticmethod
     def from_dict(obj: Any) -> 'Diff':
@@ -52,8 +55,9 @@ class Diff:
         transaction = from_list(Transaction.from_dict, obj.get("transaction"))
         reminderMarker = from_list(ReminderMarker.from_dict, obj.get("reminderMarker"))
         serverTimestamp = from_int(obj.get("serverTimestamp"))
-        print(obj.get("currentClientTimestamp"))
         currentClientTimestamp = from_int(obj.get("currentClientTimestamp"))
+        deletion = from_list(Deletion.from_dict, obj.get("deletion"))
+        forceFetch = obj.get("forceFetch")
         return Diff(
             serverTimestamp,
             currentClientTimestamp,
@@ -68,6 +72,8 @@ class Diff:
             instrument,
             transaction,
             reminderMarker,
+            deletion,
+            forceFetch,
         )
 
     def to_dict(self) -> dict:
@@ -85,5 +91,7 @@ class Diff:
         result["instrument"] = from_list(lambda x: to_class(Instrument, x), self.instrument)
         result["transaction"] = from_list(lambda x: to_class(Transaction, x), self.transaction)
         result["reminderMarker"] = from_list(lambda x: to_class(ReminderMarker, x), self.reminderMarker)
+        result["deletion"] = from_list(lambda x: to_class(Deletion, x), self.deletion)
+        result["forceFetch"] = self.forceFetch
         # todo подумать как изменить этот кусок кода, чтобы формировать dict уже по единому алгоритму
         return remove_empty_attributes(data=result)
