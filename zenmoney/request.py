@@ -1,3 +1,4 @@
+from models.transaction import Transaction
 from .base import BaseZenmoneyRequest
 from .constant import API_URL
 from models.diff import Diff
@@ -24,3 +25,6 @@ class ZenmoneyRequestRaw(BaseZenmoneyRequest):
 class ZenmoneyRequest(ZenmoneyRequestRaw):
     def diff(self, params: Diff) -> Diff:
         return Diff.from_dict(super().diff(params.to_dict()))
+
+    def suggest(self, transaction: Transaction) -> dict:
+        return super().suggest(transaction=transaction.to_dict())

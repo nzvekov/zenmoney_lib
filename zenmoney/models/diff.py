@@ -18,7 +18,7 @@ from .user import User
 
 
 def remove_empty_attributes(data: dict) -> dict:
-    return {k: v for k, v in data.items() if v not in [[], {}]}
+    return {k: v for k, v in data.items() if v not in [[], {}, None]}
 
 
 @dataclass
@@ -40,11 +40,12 @@ class Diff:
     forceFetch: Optional[List[str]]
 
     def __post_init__(self):
-        if self.forceFetch and not isinstance(self.forceFetch, list):
-            raise TypeError(f"Expected list, got {type(self.forceFetch).__name__}")
+        if self.forceFetch:
+            if isinstance(self.forceFetch, list):
+                raise TypeError(f"Expected list, got {type(self.forceFetch).__name__}")
 
-        for obj in self.forceFetch:
-            check_object_class_name_list(obj)
+            for obj in self.forceFetch:
+                check_object_class_name_list(obj)
 
     @staticmethod
     def from_dict(obj: Any) -> 'Diff':
