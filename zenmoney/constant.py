@@ -12,5 +12,5 @@ OBJECT_CLASS_NAME_LIST = [
     'reminderMarker',
     'tag',
     'transaction',
-    'user'
+    'user',
 ]
