@@ -27,4 +27,4 @@ class ZenmoneyRequest(ZenmoneyRequestRaw):
         return Diff.from_dict(super().diff(params.to_dict()))
 
     def suggest(self, transaction: Transaction) -> dict:
-        return super().suggest(transaction=transaction.to_dict())
+        raise NotImplementedError("This method should not be overridden")
