@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 from typing import Any
+
+from utils import check_object_class_name_list
 from .helpers import from_int, from_str
 
 
@@ -9,6 +11,9 @@ class Deletion:
     object: str
     stamp: int
     user: int
+
+    def __post_init__(self):
+        check_object_class_name_list(self.object)
 
     @staticmethod
     def from_dict(obj: Any) -> 'Deletion':
