@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 
 import requests
@@ -13,5 +14,5 @@ def timestamp(date: datetime = None) -> int:
 def convert_response_to_json(response: requests.Response) -> dict:
     try:
         return response.json()
-    except ValueError as error:
-        raise ValueError('Failed to convert response to JSON', error)
+    except json.decoder.JSONDecodeError as error:
+        raise ValueError('Failed to convert response to JSON', error) from error
