@@ -1,13 +1,11 @@
 from dataclasses import dataclass
-from typing import List, Any, Optional
+from typing import Any, List, Optional
 
-from utils import check_object_class_name_list
-from .deletion import Deletion
-from .helpers import from_list, to_class, from_int
 from .account import Account
 from .budget import Budget
 from .company import Company
 from .country import Country
+from .deletion import Deletion
 from .instrument import Instrument
 from .merchant import Merchant
 from .reminder import Reminder
@@ -15,10 +13,7 @@ from .reminder_marker import ReminderMarker
 from .tag import Tag
 from .transaction import Transaction
 from .user import User
-
-
-def remove_empty_attributes(data: dict) -> dict:
-    return {k: v for k, v in data.items() if v not in [[], {}, None]}
+from .utils import check_object_class_name_list, from_int, from_list, to_class
 
 
 @dataclass
@@ -41,7 +36,7 @@ class Diff:
 
     def __post_init__(self):
         if self.forceFetch:
-            if isinstance(self.forceFetch, list):
+            if not isinstance(self.forceFetch, list):
                 raise TypeError(f"Expected list, got {type(self.forceFetch).__name__}")
 
             for obj in self.forceFetch:
@@ -104,3 +99,7 @@ class Diff:
         result["forceFetch"] = self.forceFetch
         # todo подумать как изменить этот кусок кода, чтобы формировать dict уже по единому алгоритму
         return remove_empty_attributes(data=result)
+
+
+def remove_empty_attributes(data: dict) -> dict:
+    return {k: v for k, v in data.items() if v not in [[], {}, None]}
