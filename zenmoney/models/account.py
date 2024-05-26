@@ -1,18 +1,18 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Optional, List, Any
+from typing import Any, List, Optional
 from uuid import UUID
 
-from models.enum import BalanceCorrectionType, Interval, TypeEnum
-from models.helpers import (
-    from_int,
-    from_str,
+from models.enums import BalanceCorrectionType, Interval, TypeEnum
+from models.utils import (
     from_bool,
-    from_float,
-    from_union,
-    from_none,
-    from_list,
     from_datetime,
+    from_float,
+    from_int,
+    from_list,
+    from_none,
+    from_str,
+    from_union,
     to_enum,
     to_float,
 )

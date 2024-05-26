@@ -1,7 +1,8 @@
-from models.enum import Enum
-from typing import List, Any, TypeVar, Callable, Type, cast
 from datetime import datetime
+from enum import Enum
+from typing import Any, Callable, List, Type, TypeVar, cast
 
+from constant import OBJECT_CLASS_NAME_LIST
 
 T = TypeVar("T")
 EnumT = TypeVar("EnumT", bound=Enum)
@@ -85,3 +86,8 @@ def to_class(c: Type[T], value: Any) -> dict:
     if not isinstance(value, c):
         raise TypeError(f"Expected {c.__name__}, got {type(value).__name__}")
     return cast(Any, value).to_dict()
+
+
+def check_object_class_name_list(obj: str) -> None:
+    if obj not in OBJECT_CLASS_NAME_LIST:
+        raise ValueError(f'The object {obj} is unknown')

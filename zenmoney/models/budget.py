@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Optional, Any
+from typing import Any, Optional
 from uuid import UUID
 
-from models.helpers import from_int, from_bool, from_union, from_none, from_datetime
+from models.utils import from_bool, from_datetime, from_int, from_none, from_union
 
 
 @dataclass

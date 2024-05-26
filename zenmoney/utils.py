@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from constant import OBJECT_CLASS_NAME_LIST
+import requests
 
 
 def timestamp(date: datetime = None) -> int:
@@ -10,6 +10,8 @@ def timestamp(date: datetime = None) -> int:
     return int(datetime.timestamp(datetime.now()))
 
 
-def check_object_class_name_list(obj: str) -> None:
-    if obj not in OBJECT_CLASS_NAME_LIST:
-        raise ValueError(f'The object {obj} is unknown')
+def convert_response_to_json(response: requests.Response) -> dict:
+    try:
+        return response.json()
+    except ValueError as error:
+        raise ValueError('Failed to convert response to JSON', error)
