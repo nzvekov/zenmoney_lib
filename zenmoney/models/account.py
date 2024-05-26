@@ -3,8 +3,8 @@ from datetime import datetime
 from typing import Any, List, Optional
 from uuid import UUID
 
-from models.enums import BalanceCorrectionType, Interval, TypeEnum
-from models.utils import (
+from .enums import BalanceCorrectionType, Interval, TypeEnum
+from .utils import (
     from_bool,
     from_datetime,
     from_float,

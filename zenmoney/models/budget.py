@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Any, Optional
 from uuid import UUID
 
-from models.utils import from_bool, from_datetime, from_int, from_none, from_union
+from .utils import from_bool, from_datetime, from_int, from_none, from_union
 
 
 @dataclass
