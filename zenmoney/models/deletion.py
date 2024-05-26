@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 from typing import Any
 
-from utils import check_object_class_name_list
-from .helpers import from_int, from_str
+from .utils import check_object_class_name_list, from_int, from_str
 
 
 @dataclass

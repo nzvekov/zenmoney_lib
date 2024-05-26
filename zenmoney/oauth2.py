@@ -2,16 +2,12 @@ import time
 from dataclasses import dataclass
 from http import HTTPStatus
 from typing import Optional
-
-import requests
+from urllib.parse import urlparse
 
 from .base import BaseZenmoneyRequest
-from .constant import API_URL
+from .constant import URI_AUTH, URI_REDIRECT, URI_TOKEN
 from .exception import ZenmoneyError
-
-URI_AUTH = API_URL + '/oauth2/authorize/'
-URI_TOKEN = API_URL + '/oauth2/token/'
-URI_REDIRECT = 'notscheme://localhost/'
+from .utils import convert_response_to_json
 
 
 @dataclass
@@ -26,7 +22,7 @@ class Token:
         return int(time.time()) < self.expires_in
 
 
-class OAuth2ZenmoneyClient(BaseZenmoneyRequest):
+class ZenmoneyOAuth2(BaseZenmoneyRequest):
     def __init__(self, consumer_key: str, consumer_secret: str, username: str, password: str):
         super().__init__()
         self.consumer_key = consumer_key
@@ -56,10 +52,10 @@ class OAuth2ZenmoneyClient(BaseZenmoneyRequest):
         if response.status_code != HTTPStatus.OK:
             raise ZenmoneyError(f"Failed to get token: {response.text}")
 
-        return Token(**response.json())
+        return Token(**convert_response_to_json(response))
 
     def get_code(self) -> str:
-        self.session.get(
+        self.get(
             URI_AUTH,
             params={
                 'response_type': 'code',
@@ -80,10 +76,10 @@ class OAuth2ZenmoneyClient(BaseZenmoneyRequest):
             raise ZenmoneyError("Authorization failed")
 
         code_redirect = response._next.url
-        code_query = requests.utils.urlparse(code_redirect).query
+        code_query = urlparse(code_redirect).query
         code_dict = dict(x.split('=') for x in code_query.split('&'))
         if not code_dict.get('code', False):
             raise ZenmoneyError(
-                "User authorization redirect url {} does not contain 'code' parameter".format(code_redirect),
+                f"User authorization redirect url {code_redirect} does not contain 'code' parameter",
             )
         return code_dict.get('code')

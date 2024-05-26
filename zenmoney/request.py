@@ -1,30 +1,23 @@
-from models.transaction import Transaction
+from models import Diff
+
 from .base import BaseZenmoneyRequest
-from .constant import API_URL
-from models.diff import Diff
+from .constant import URI_DIFF, URI_SUGGEST
 
 
-class ZenmoneyRequestRaw(BaseZenmoneyRequest):
+class ZenmoneyRequest(BaseZenmoneyRequest):
     def __init__(self, token: str):
         super().__init__()
+        self.set_headers(token)
+
+    def set_headers(self, token):
         self.session.headers['Authorization'] = f"Bearer {token}"
         self.session.headers['Content-Type'] = 'application/json'
-        self.json_diff = None
 
-    def diff(self, params: dict) -> dict:
-        uri_diff = API_URL + '/v8/diff/'
-        response = self.post(uri_diff, json=params)
-        return response.json()
+    def raw_diff(self, data: dict) -> dict:
+        return self.post_and_parse_response_json(URI_DIFF, data)
 
-    def suggest(self, transaction: dict) -> dict:
-        uri_suggest = API_URL + '/v8/suggest/'
-        response = self.post(uri_suggest, json={'transaction': transaction})
-        return response.json()
-
-
-class ZenmoneyRequest(ZenmoneyRequestRaw):
     def diff(self, params: Diff) -> Diff:
-        return Diff.from_dict(super().diff(params.to_dict()))
+        return Diff.from_dict(self.raw_diff(params.to_dict()))
 
-    def suggest(self, transaction: Transaction) -> dict:
-        raise NotImplementedError("This method should not be overridden")
+    def raw_suggest(self, data: dict) -> dict:
+        return self.post_and_parse_response_json(URI_SUGGEST, data)

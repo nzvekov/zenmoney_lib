@@ -4,10 +4,14 @@ This library allows you to use [ZenMoney API](https://github.com/zenmoney/ZenPlu
 There is a simplest way to start:
 
 ```python
-from zenmoney import *
+import time
 
-oauth = OAuth2('consumer_key', 'consumer_secret', 'username', 'user_password')
-api = ZenmoneyRequest(oauth.token.access_token)
+from zenmoney import Diff, ZenmoneyOAuth2, ZenmoneyRequest
+
+oauth = ZenmoneyOAuth2('your_consumer_key', 'your_consumer_secret', 'user_name', 'user_password')
+zenmoney_client = ZenmoneyRequest(oauth.token.access_token)
+server_timestamp = 0
+current_timestamp = int(time.time())
 params = Diff.from_dict(
     {
         'serverTimestamp': server_timestamp,

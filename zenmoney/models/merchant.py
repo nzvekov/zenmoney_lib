@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Any
 from uuid import UUID
 
-from .helpers import from_int, from_str
+from .utils import from_int, from_str
 
 
 @dataclass
