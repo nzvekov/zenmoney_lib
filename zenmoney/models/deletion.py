@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Any
+from uuid import UUID
 
 from .mixins import BaseUserObjectMixin
 from .utils import check_object_class_name_list, from_int, from_str
@@ -19,7 +20,7 @@ class Deletion(BaseUserObjectMixin):
             raise TypeError(f"Expected dict, got {type(obj).__name__}")
 
         return Deletion(
-            id=from_str(obj.get("id")),
+            id=UUID(obj.get("id")),
             object=from_str(obj.get("object")),
             stamp=from_int(obj.get("stamp")),
             user=from_int(obj.get("user")),
