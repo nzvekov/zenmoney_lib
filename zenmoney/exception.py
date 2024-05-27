@@ -9,4 +9,5 @@ class ZenmoneyRequestError(Exception):
     Attributes:
         message (str): A description of the error.
     """
+
     pass
