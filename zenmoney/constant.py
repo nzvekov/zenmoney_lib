@@ -1,6 +1,7 @@
 API_URL = 'https://api.zenmoney.ru'
-URI_AUTH = API_URL + '/oauth2/authorize/'
-URI_TOKEN = API_URL + '/oauth2/token/'
-URI_REDIRECT = 'notscheme://localhost/'
-URI_DIFF = API_URL + '/v8/diff/'
-URI_SUGGEST = API_URL + '/v8/suggest/'
+AUTH_URL = API_URL + '/oauth2/authorize/'
+TOKEN_URL = API_URL + '/oauth2/token/'
+REDIRECT_URL = 'notscheme://localhost/'
+DIFF_URL = API_URL + '/v8/diff/'
+SUGGEST_URL = API_URL + '/v8/suggest/'
+DEFAULT_TIMEOUT = 60

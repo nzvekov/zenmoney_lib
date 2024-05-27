@@ -1,7 +1,7 @@
-import json
 from datetime import datetime
 
-import requests
+from exception import ZenmoneyRequestError
+from requests import JSONDecodeError, Response
 
 
 def timestamp(date: datetime = None) -> int:
@@ -11,8 +11,8 @@ def timestamp(date: datetime = None) -> int:
     return int(datetime.timestamp(datetime.now()))
 
 
-def convert_response_to_json(response: requests.Response) -> dict:
+def convert_response_to_json(response: Response) -> dict:
     try:
         return response.json()
-    except json.decoder.JSONDecodeError as error:
-        raise ValueError('Failed to convert response to JSON', error) from error
+    except JSONDecodeError as err:
+        raise ZenmoneyRequestError('Failed to convert response to JSON', err) from err
