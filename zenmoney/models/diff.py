@@ -30,16 +30,16 @@ class Diff:
     reminder: Optional[List[Reminder]]
     instrument: Optional[List[Instrument]]
     transaction: Optional[List[Transaction]]
-    reminderMarker: Optional[List[ReminderMarker]]
+    reminder_marker: Optional[List[ReminderMarker]]
     deletion: Optional[List[Deletion]]
-    forceFetch: Optional[List[str]]
+    force_fetch: Optional[List[str]]
 
     def __post_init__(self):
-        if self.forceFetch:
-            if not isinstance(self.forceFetch, list):
-                raise TypeError(f"Expected list, got {type(self.forceFetch).__name__}")
+        if self.force_fetch:
+            if not isinstance(self.force_fetch, list):
+                raise TypeError(f"Expected list, got {type(self.force_fetch).__name__}")
 
-            for obj in self.forceFetch:
+            for obj in self.force_fetch:
                 check_object_class_name_list(obj)
 
     @staticmethod
@@ -47,37 +47,22 @@ class Diff:
         if not isinstance(obj, dict):
             raise TypeError(f"Expected dict, got {type(obj).__name__}")
 
-        tag = from_list(Tag.from_dict, obj.get("tag"))
-        user = from_list(User.from_dict, obj.get("user"))
-        budget = from_list(Budget.from_dict, obj.get("budget"))
-        account = from_list(Account.from_dict, obj.get("account"))
-        company = from_list(Company.from_dict, obj.get("company"))
-        country = from_list(Country.from_dict, obj.get("country"))
-        merchant = from_list(Merchant.from_dict, obj.get("merchant"))
-        reminder = from_list(Reminder.from_dict, obj.get("reminder"))
-        instrument = from_list(Instrument.from_dict, obj.get("instrument"))
-        transaction = from_list(Transaction.from_dict, obj.get("transaction"))
-        reminderMarker = from_list(ReminderMarker.from_dict, obj.get("reminderMarker"))
-        serverTimestamp = from_int(obj.get("serverTimestamp"))
-        currentClientTimestamp = from_int(obj.get("currentClientTimestamp"))
-        deletion = from_list(Deletion.from_dict, obj.get("deletion"))
-        forceFetch = obj.get("forceFetch")
         return Diff(
-            serverTimestamp,
-            currentClientTimestamp,
-            tag,
-            user,
-            budget,
-            account,
-            company,
-            country,
-            merchant,
-            reminder,
-            instrument,
-            transaction,
-            reminderMarker,
-            deletion,
-            forceFetch,
+            serverTimestamp=from_int(obj.get("serverTimestamp")),
+            currentClientTimestamp=from_int(obj.get("currentClientTimestamp")),
+            tag=from_list(Tag.from_dict, obj.get("tag")),
+            user=from_list(User.from_dict, obj.get("user")),
+            budget=from_list(Budget.from_dict, obj.get("budget")),
+            account=from_list(Account.from_dict, obj.get("account")),
+            company=from_list(Company.from_dict, obj.get("company")),
+            country=from_list(Country.from_dict, obj.get("country")),
+            merchant=from_list(Merchant.from_dict, obj.get("merchant")),
+            reminder=from_list(Reminder.from_dict, obj.get("reminder")),
+            instrument=from_list(Instrument.from_dict, obj.get("instrument")),
+            transaction=from_list(Transaction.from_dict, obj.get("transaction")),
+            reminder_marker=from_list(ReminderMarker.from_dict, obj.get("reminderMarker")),
+            deletion=from_list(Deletion.from_dict, obj.get("deletion")),
+            force_fetch=obj.get("forceFetch"),
         )
 
     def to_dict(self) -> dict:
@@ -94,9 +79,9 @@ class Diff:
         result["reminder"] = from_list(lambda x: to_class(Reminder, x), self.reminder)
         result["instrument"] = from_list(lambda x: to_class(Instrument, x), self.instrument)
         result["transaction"] = from_list(lambda x: to_class(Transaction, x), self.transaction)
-        result["reminderMarker"] = from_list(lambda x: to_class(ReminderMarker, x), self.reminderMarker)
+        result["reminderMarker"] = from_list(lambda x: to_class(ReminderMarker, x), self.reminder_marker)
         result["deletion"] = from_list(lambda x: to_class(Deletion, x), self.deletion)
-        result["forceFetch"] = self.forceFetch
+        result["forceFetch"] = self.force_fetch
         # todo подумать как изменить этот кусок кода, чтобы формировать dict уже по единому алгоритму
         return remove_empty_attributes(data=result)
 

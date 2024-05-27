@@ -1,25 +1,24 @@
 from dataclasses import dataclass
 from typing import Any, Optional
 
+from .mixins import ChangedMixin, IntIdMixin
 from .utils import from_bool, from_int, from_none, from_str, from_union
 
 
 @dataclass
-class User:
-    id: int
+class User(IntIdMixin, ChangedMixin):
     email: str
     login: str
-    changed: int
     country: int
     currency: int
-    paidTill: int
-    countryCode: str
-    planSettings: str
+    paid_till: int
+    country_code: str
+    plan_settings: str
     subscription: str
-    monthStartDay: int
-    planBalanceMode: str
-    isForecastEnabled: bool
-    subscriptionRenewalDate: None
+    month_start_day: int
+    plan_balance_mode: str
+    is_forecast_enabled: bool
+    subscription_renewal_date: None
     parent: Optional[int] = None
 
     @staticmethod
@@ -27,37 +26,22 @@ class User:
         if not isinstance(obj, dict):
             raise TypeError(f"Expected dict, got {type(obj).__name__}")
 
-        id = from_int(obj.get("id"))
-        email = from_str(obj.get("email"))
-        login = from_str(obj.get("login"))
-        changed = from_int(obj.get("changed"))
-        country = from_int(obj.get("country"))
-        currency = from_int(obj.get("currency"))
-        paidTill = from_int(obj.get("paidTill"))
-        countryCode = from_str(obj.get("countryCode"))
-        planSettings = from_str(obj.get("planSettings"))
-        subscription = from_str(obj.get("subscription"))
-        monthStartDay = from_int(obj.get("monthStartDay"))
-        planBalanceMode = from_str(obj.get("planBalanceMode"))
-        isForecastEnabled = from_bool(obj.get("isForecastEnabled"))
-        subscriptionRenewalDate = from_none(obj.get("subscriptionRenewalDate"))
-        parent = from_union([from_none, from_int], obj.get("parent"))
         return User(
-            id,
-            email,
-            login,
-            changed,
-            country,
-            currency,
-            paidTill,
-            countryCode,
-            planSettings,
-            subscription,
-            monthStartDay,
-            planBalanceMode,
-            isForecastEnabled,
-            subscriptionRenewalDate,
-            parent,
+            id=from_int(obj.get("id")),
+            email=from_str(obj.get("email")),
+            login=from_str(obj.get("login")),
+            changed=from_int(obj.get("changed")),
+            country=from_int(obj.get("country")),
+            currency=from_int(obj.get("currency")),
+            paid_till=from_int(obj.get("paidTill")),
+            country_code=from_str(obj.get("countryCode")),
+            plan_settings=from_str(obj.get("planSettings")),
+            subscription=from_str(obj.get("subscription")),
+            month_start_day=from_int(obj.get("monthStartDay")),
+            plan_balance_mode=from_str(obj.get("planBalanceMode")),
+            is_forecast_enabled=from_bool(obj.get("isForecastEnabled")),
+            subscription_renewal_date=from_none(obj.get("subscriptionRenewalDate")),
+            parent=from_union([from_none, from_int], obj.get("parent")),
         )
 
     def to_dict(self) -> dict:
@@ -68,13 +52,13 @@ class User:
         result["changed"] = from_int(self.changed)
         result["country"] = from_int(self.country)
         result["currency"] = from_int(self.currency)
-        result["paidTill"] = from_int(self.paidTill)
-        result["countryCode"] = from_str(self.countryCode)
-        result["planSettings"] = from_str(self.planSettings)
+        result["paidTill"] = from_int(self.paid_till)
+        result["countryCode"] = from_str(self.country_code)
+        result["planSettings"] = from_str(self.plan_settings)
         result["subscription"] = from_str(self.subscription)
-        result["monthStartDay"] = from_int(self.monthStartDay)
-        result["planBalanceMode"] = from_str(self.planBalanceMode)
-        result["isForecastEnabled"] = from_bool(self.isForecastEnabled)
-        result["subscriptionRenewalDate"] = from_none(self.subscriptionRenewalDate)
+        result["monthStartDay"] = from_int(self.month_start_day)
+        result["planBalanceMode"] = from_str(self.plan_balance_mode)
+        result["isForecastEnabled"] = from_bool(self.is_forecast_enabled)
+        result["subscriptionRenewalDate"] = from_none(self.subscription_renewal_date)
         result["parent"] = from_union([from_none, from_int], self.parent)
         return result

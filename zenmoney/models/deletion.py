@@ -1,15 +1,14 @@
 from dataclasses import dataclass
 from typing import Any
 
+from .mixins import BaseUserObjectMixin
 from .utils import check_object_class_name_list, from_int, from_str
 
 
 @dataclass
-class Deletion:
-    id: str
+class Deletion(BaseUserObjectMixin):
     object: str
     stamp: int
-    user: int
 
     def __post_init__(self):
         check_object_class_name_list(self.object)

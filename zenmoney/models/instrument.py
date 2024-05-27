@@ -1,30 +1,29 @@
 from dataclasses import dataclass
 from typing import Any
 
+from .mixins import BaseServiceObjectMixin, ChangedMixin
 from .utils import from_float, from_int, from_str, to_float
 
 
 @dataclass
-class Instrument:
-    id: int
+class Instrument(BaseServiceObjectMixin, ChangedMixin):
     rate: float
-    title: str
     symbol: str
-    changed: int
-    shortTitle: str
+    short_title: str
 
     @staticmethod
     def from_dict(obj: Any) -> 'Instrument':
         if not isinstance(obj, dict):
             raise TypeError(f"Expected dict, got {type(obj).__name__}")
 
-        id = from_int(obj.get("id"))
-        rate = from_float(obj.get("rate"))
-        title = from_str(obj.get("title"))
-        symbol = from_str(obj.get("symbol"))
-        changed = from_int(obj.get("changed"))
-        shortTitle = from_str(obj.get("shortTitle"))
-        return Instrument(id, rate, title, symbol, changed, shortTitle)
+        return Instrument(
+            id=from_int(obj.get("id")),
+            rate=from_float(obj.get("rate")),
+            title=from_str(obj.get("title")),
+            symbol=from_str(obj.get("symbol")),
+            changed=from_int(obj.get("changed")),
+            short_title=from_str(obj.get("shortTitle")),
+        )
 
     def to_dict(self) -> dict:
         result: dict = {}
@@ -33,5 +32,5 @@ class Instrument:
         result["title"] = from_str(self.title)
         result["symbol"] = from_str(self.symbol)
         result["changed"] = from_int(self.changed)
-        result["shortTitle"] = from_str(self.shortTitle)
+        result["shortTitle"] = from_str(self.short_title)
         return result

@@ -2,26 +2,23 @@ from dataclasses import dataclass
 from typing import Any
 from uuid import UUID
 
+from .mixins import BaseUserDictionaryObjectMixin
 from .utils import from_int, from_str
 
 
 @dataclass
-class Merchant:
-    id: UUID
-    user: int
-    title: str
-    changed: int
-
+class Merchant(BaseUserDictionaryObjectMixin):
     @staticmethod
     def from_dict(obj: Any) -> 'Merchant':
         if not isinstance(obj, dict):
             raise TypeError(f"Expected dict, got {type(obj).__name__}")
 
-        id = UUID(obj.get("id"))
-        user = from_int(obj.get("user"))
-        title = from_str(obj.get("title"))
-        changed = from_int(obj.get("changed"))
-        return Merchant(id, user, title, changed)
+        return Merchant(
+            id=UUID(obj.get("id")),
+            user=from_int(obj.get("user")),
+            title=from_str(obj.get("title")),
+            changed=from_int(obj.get("changed")),
+        )
 
     def to_dict(self) -> dict:
         result: dict = {}
