@@ -1,2 +1,2 @@
-class ZenmoneyError(Exception):
-    ...
+class ZenmoneyRequestError(Exception):
+    pass

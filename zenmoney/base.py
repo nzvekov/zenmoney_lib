@@ -1,29 +1,25 @@
 import requests
+from constant import DEFAULT_TIMEOUT
+from requests.exceptions import RequestException
 
-from .exception import ZenmoneyError
-from .utils import convert_response_to_json
+from .exception import ZenmoneyRequestError
 
 
 class BaseZenmoneyRequest(object):
-    def __init__(self):
+    def __init__(self, timeout=DEFAULT_TIMEOUT):
         self.session = requests.Session()
+        self.timeout = timeout
 
-    def get(self, uri: str, **kwargs):
-        response = self.session.get(uri, **kwargs)
-        if not response.ok:
-            raise ZenmoneyError(
-                f'GET request to {uri} wasn\'t successful, code={response.status_code}',
-            )
-        return response
+    def _request(self, method: str, url: str, **kwargs) -> requests.Response:
+        try:
+            response = self.session.request(method, url, timeout=self.timeout, **kwargs)
+            response.raise_for_status()
+            return response
+        except RequestException as err:
+            raise ZenmoneyRequestError(f"Request error: {err}") from err
 
-    def post(self, uri: str, **kwargs):
-        response = self.session.post(uri, **kwargs)
-        if not response.ok:
-            raise ZenmoneyError(
-                f'POST request to {uri} wasn\'t successful, code={response.status_code}',
-            )
-        return response
+    def _get(self, url: str, **kwargs):
+        return self._request('GET', url, **kwargs)
 
-    def post_and_parse_response_json(self, uri: str, data: dict) -> dict:
-        response = self.post(uri, json=data)
-        return convert_response_to_json(response)
+    def _post(self, url: str, **kwargs):
+        return self._request('POST', url, **kwargs)

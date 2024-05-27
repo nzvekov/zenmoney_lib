@@ -1,23 +1,28 @@
 from models import Diff
+from utils import convert_response_to_json
 
 from .base import BaseZenmoneyRequest
-from .constant import URI_DIFF, URI_SUGGEST
+from .constant import DEFAULT_TIMEOUT, DIFF_URL, SUGGEST_URL
 
 
 class ZenmoneyRequest(BaseZenmoneyRequest):
-    def __init__(self, token: str):
-        super().__init__()
-        self.set_headers(token)
+    def __init__(
+        self, token: str, *, timeout: int = DEFAULT_TIMEOUT, diff_url: str = DIFF_URL, suggest_url: str = SUGGEST_URL
+    ):
+        super().__init__(timeout=timeout)
+        self._diff_url = diff_url
+        self._suggest_url = suggest_url
+        self._set_headers(token)
 
-    def set_headers(self, token):
+    def _set_headers(self, token):
         self.session.headers['Authorization'] = f"Bearer {token}"
         self.session.headers['Content-Type'] = 'application/json'
 
     def raw_diff(self, data: dict) -> dict:
-        return self.post_and_parse_response_json(URI_DIFF, data)
+        return convert_response_to_json(self._post(self._diff_url, json=data))
 
     def diff(self, params: Diff) -> Diff:
         return Diff.from_dict(self.raw_diff(params.to_dict()))
 
     def raw_suggest(self, data: dict) -> dict:
-        return self.post_and_parse_response_json(URI_SUGGEST, data)
+        return convert_response_to_json(self._post(self._suggest_url, json=data))
