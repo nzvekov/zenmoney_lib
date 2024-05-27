@@ -18,8 +18,8 @@ class BaseZenmoneyRequest(object):
         except RequestException as err:
             raise ZenmoneyRequestError(f"Request error: {err}") from err
 
-    def _get(self, url: str, **kwargs):
+    def _get(self, url: str, **kwargs) -> requests.Response:
         return self._request('GET', url, **kwargs)
 
-    def _post(self, url: str, **kwargs):
+    def _post(self, url: str, **kwargs) -> requests.Response:
         return self._request('POST', url, **kwargs)

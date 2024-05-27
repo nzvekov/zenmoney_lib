@@ -14,7 +14,7 @@ class ZenmoneyRequest(BaseZenmoneyRequest):
         self._suggest_url = suggest_url
         self._set_headers(token)
 
-    def _set_headers(self, token):
+    def _set_headers(self, token) -> None:
         self.session.headers['Authorization'] = f"Bearer {token}"
         self.session.headers['Content-Type'] = 'application/json'
 

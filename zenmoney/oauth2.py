@@ -46,12 +46,12 @@ class ZenmoneyOAuth2(BaseZenmoneyRequest):
         self._redirect_url = redirect_url
 
     @property
-    def token(self):
+    def token(self) -> Token:
         if self._token is None or not self._token.is_valid:
             self._token = self._get_token()
         return self._token
 
-    def _get_token(self):
+    def _get_token(self) -> Token:
         code = self._get_code()
         response = self._post(
             self._token_url,
