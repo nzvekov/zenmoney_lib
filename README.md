@@ -7,7 +7,7 @@ There is a simplest way to start:
 import time
 
 from zenmoney import Diff, ZenmoneyOAuth2, ZenmoneyRequest
-
+cd ..
 oauth = ZenmoneyOAuth2('your_consumer_key', 'your_consumer_secret', 'user_name', 'user_password')
 zenmoney_client = ZenmoneyRequest(oauth.token.access_token)
 server_timestamp = 0
