@@ -18,8 +18,8 @@ from .utils import check_object_class_name_list, from_int, from_list, to_class
 
 @dataclass
 class Diff:
-    serverTimestamp: int
-    currentClientTimestamp: int
+    server_timestamp: int
+    current_client_timestamp: int
     tag: Optional[List[Tag]]
     user: Optional[List[User]]
     budget: Optional[List[Budget]]
@@ -48,8 +48,8 @@ class Diff:
             raise TypeError(f"Expected dict, got {type(obj).__name__}")
 
         return Diff(
-            serverTimestamp=from_int(obj.get("serverTimestamp")),
-            currentClientTimestamp=from_int(obj.get("currentClientTimestamp")),
+            server_timestamp=from_int(obj.get("serverTimestamp")),
+            current_client_timestamp=from_int(obj.get("currentClientTimestamp")),
             tag=from_list(Tag.from_dict, obj.get("tag")),
             user=from_list(User.from_dict, obj.get("user")),
             budget=from_list(Budget.from_dict, obj.get("budget")),
@@ -67,8 +67,8 @@ class Diff:
 
     def to_dict(self) -> dict:
         result: dict = {}
-        result["serverTimestamp"] = from_int(self.serverTimestamp)
-        result["currentClientTimestamp"] = from_int(self.currentClientTimestamp)
+        result["serverTimestamp"] = from_int(self.server_timestamp)
+        result["currentClientTimestamp"] = from_int(self.current_client_timestamp)
         result["tag"] = from_list(lambda x: to_class(Tag, x), self.tag)
         result["user"] = from_list(lambda x: to_class(User, x), self.user)
         result["budget"] = from_list(lambda x: to_class(Budget, x), self.budget)

@@ -1,4 +1,4 @@
-from models import Diff
+from models.diff import Diff
 
 from .base import BaseZenmoneyRequest
 from .constant import DEFAULT_TIMEOUT, DIFF_URL, SUGGEST_URL
