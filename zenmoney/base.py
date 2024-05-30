@@ -1,7 +1,7 @@
 import requests
-from constant import DEFAULT_TIMEOUT
 from requests.exceptions import RequestException
 
+from .constant import DEFAULT_TIMEOUT
 from .exception import ZenmoneyRequestError
 
 

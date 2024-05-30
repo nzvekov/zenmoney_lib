@@ -1,7 +1,8 @@
 from datetime import datetime
 
-from exception import ZenmoneyRequestError
 from requests import JSONDecodeError, Response
+
+from .exception import ZenmoneyRequestError
 
 
 def timestamp(date: datetime = None) -> int:
