@@ -1,8 +1,8 @@
 from models import Diff
-from utils import convert_response_to_json
 
 from .base import BaseZenmoneyRequest
 from .constant import DEFAULT_TIMEOUT, DIFF_URL, SUGGEST_URL
+from .utils import convert_response_to_json
 
 
 class ZenmoneyRequest(BaseZenmoneyRequest):
