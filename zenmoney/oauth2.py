@@ -1,25 +1,13 @@
-import time
-from dataclasses import dataclass
 from http import HTTPStatus
 from typing import Optional
 from urllib.parse import urlparse
+
+from models import Token
 
 from .base import BaseZenmoneyRequest
 from .constant import AUTH_URL, DEFAULT_TIMEOUT, REDIRECT_URL, TOKEN_URL
 from .exception import ZenmoneyRequestError
 from .utils import convert_response_to_json
-
-
-@dataclass
-class Token:
-    access_token: str
-    token_type: str
-    expires_in: int
-    refresh_token: str
-
-    @property
-    def is_valid(self) -> bool:
-        return int(time.time()) < self.expires_in
 
 
 class ZenmoneyOAuth2(BaseZenmoneyRequest):
@@ -30,7 +18,7 @@ class ZenmoneyOAuth2(BaseZenmoneyRequest):
         username: str,
         password: str,
         *,
-        timeout: int = DEFAULT_TIMEOUT,
+        timeout: float | tuple[float, float] | tuple[float, None] | None = DEFAULT_TIMEOUT,
         token_url: str = TOKEN_URL,
         auth_url: str = AUTH_URL,
         redirect_url: str = REDIRECT_URL,
@@ -88,8 +76,7 @@ class ZenmoneyOAuth2(BaseZenmoneyRequest):
         )
         if response.status_code != HTTPStatus.FOUND:
             raise ZenmoneyRequestError("Authorization failed")
-
-        code_redirect = response._next.url
+        code_redirect = response.next.url
         code_query = urlparse(code_redirect).query
         code_dict = dict(x.split('=') for x in code_query.split('&'))
         if not code_dict.get('code', False):

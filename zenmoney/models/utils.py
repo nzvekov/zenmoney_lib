@@ -6,6 +6,11 @@ T = TypeVar("T")
 EnumT = TypeVar("EnumT", bound=Enum)
 
 
+def check_dict_type(value: Any) -> None:
+    if not isinstance(value, dict):
+        raise TypeError(f"Expected dict, got {type(value).__name__}")
+
+
 def from_int(value: Any) -> int:
     if value and (not isinstance(value, int) or isinstance(value, bool)):
         raise TypeError(f"Expected int, got {type(value).__name__}")

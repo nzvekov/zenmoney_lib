@@ -1,23 +1,22 @@
 from dataclasses import dataclass
-from typing import Any
 from uuid import UUID
 
-from .mixins import BaseUserObjectMixin
-from .utils import check_object_class_name_list, from_int, from_str
+from .utils import check_dict_type, check_object_class_name_list, from_int, from_str
 
 
 @dataclass
-class Deletion(BaseUserObjectMixin):
+class Deletion:
+    id: UUID
     object: str
     stamp: int
+    user: int
 
     def __post_init__(self):
         check_object_class_name_list(self.object)
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Deletion':
-        if not isinstance(obj, dict):
-            raise TypeError(f"Expected dict, got {type(obj).__name__}")
+    def from_dict(obj: dict) -> 'Deletion':
+        check_dict_type(obj)
 
         return Deletion(
             id=UUID(obj.get("id")),
@@ -27,10 +26,9 @@ class Deletion(BaseUserObjectMixin):
         )
 
     def to_dict(self) -> dict:
-        result: dict = {}
-        result["id"] = from_str(self.id)
-        result["object"] = from_str(self.object)
-        result["stamp"] = from_int(self.stamp)
-        result["user"] = from_int(self.user)
-
-        return result
+        return {
+            "id": from_str(self.id),
+            "object": from_str(self.object),
+            "stamp": from_int(self.stamp),
+            "user": from_int(self.user),
+        }

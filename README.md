@@ -12,11 +12,9 @@ oauth = ZenmoneyOAuth2('your_consumer_key', 'your_consumer_secret', 'user_name',
 zenmoney_client = ZenmoneyRequest(oauth.token.access_token)
 server_timestamp = 0
 current_timestamp = int(time.time())
-params = Diff.from_dict(
-    {
-        'serverTimestamp': server_timestamp,
-        'currentClientTimestamp': current_timestamp,
-    }
+params = Diff(
+    server_timestamp=server_timestamp,
+    current_client_timestamp=current_timestamp,
 )
 data = zenmoney_client.diff(params=params)
 ```

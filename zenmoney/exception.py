@@ -5,9 +5,6 @@ class ZenmoneyRequestError(Exception):
     This exception is raised when a request to the Zenmoney API fails
     due to various reasons such as timeouts, HTTP errors, or issues
     with the response data.
-
-    Attributes:
-        message (str): A description of the error.
     """
 
     pass

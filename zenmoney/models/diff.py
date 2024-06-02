@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, List, Optional
+from typing import List, Optional
 
 from .account import Account
 from .budget import Budget
@@ -13,26 +13,32 @@ from .reminder_marker import ReminderMarker
 from .tag import Tag
 from .transaction import Transaction
 from .user import User
-from .utils import check_object_class_name_list, from_int, from_list, to_class
+from .utils import (
+    check_dict_type,
+    check_object_class_name_list,
+    from_int,
+    from_list,
+    to_class,
+)
 
 
 @dataclass
 class Diff:
     server_timestamp: int
     current_client_timestamp: int
-    tag: Optional[List[Tag]]
-    user: Optional[List[User]]
-    budget: Optional[List[Budget]]
-    account: Optional[List[Account]]
-    company: Optional[List[Company]]
-    country: Optional[List[Country]]
-    merchant: Optional[List[Merchant]]
-    reminder: Optional[List[Reminder]]
-    instrument: Optional[List[Instrument]]
-    transaction: Optional[List[Transaction]]
-    reminder_marker: Optional[List[ReminderMarker]]
-    deletion: Optional[List[Deletion]]
-    force_fetch: Optional[List[str]]
+    tag: Optional[List[Tag]] = None
+    user: Optional[List[User]] = None
+    budget: Optional[List[Budget]] = None
+    account: Optional[List[Account]] = None
+    company: Optional[List[Company]] = None
+    country: Optional[List[Country]] = None
+    merchant: Optional[List[Merchant]] = None
+    reminder: Optional[List[Reminder]] = None
+    instrument: Optional[List[Instrument]] = None
+    transaction: Optional[List[Transaction]] = None
+    reminder_marker: Optional[List[ReminderMarker]] = None
+    deletion: Optional[List[Deletion]] = None
+    force_fetch: Optional[List[str]] = None
 
     def __post_init__(self):
         if self.force_fetch:
@@ -43,9 +49,8 @@ class Diff:
                 check_object_class_name_list(obj)
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Diff':
-        if not isinstance(obj, dict):
-            raise TypeError(f"Expected dict, got {type(obj).__name__}")
+    def from_dict(obj: dict) -> 'Diff':
+        check_dict_type(obj)
 
         return Diff(
             server_timestamp=from_int(obj.get("serverTimestamp")),
@@ -66,25 +71,26 @@ class Diff:
         )
 
     def to_dict(self) -> dict:
-        result: dict = {}
-        result["serverTimestamp"] = from_int(self.server_timestamp)
-        result["currentClientTimestamp"] = from_int(self.current_client_timestamp)
-        result["tag"] = from_list(lambda x: to_class(Tag, x), self.tag)
-        result["user"] = from_list(lambda x: to_class(User, x), self.user)
-        result["budget"] = from_list(lambda x: to_class(Budget, x), self.budget)
-        result["account"] = from_list(lambda x: to_class(Account, x), self.account)
-        result["company"] = from_list(lambda x: to_class(Company, x), self.company)
-        result["country"] = from_list(lambda x: to_class(Country, x), self.country)
-        result["merchant"] = from_list(lambda x: to_class(Merchant, x), self.merchant)
-        result["reminder"] = from_list(lambda x: to_class(Reminder, x), self.reminder)
-        result["instrument"] = from_list(lambda x: to_class(Instrument, x), self.instrument)
-        result["transaction"] = from_list(lambda x: to_class(Transaction, x), self.transaction)
-        result["reminderMarker"] = from_list(lambda x: to_class(ReminderMarker, x), self.reminder_marker)
-        result["deletion"] = from_list(lambda x: to_class(Deletion, x), self.deletion)
-        result["forceFetch"] = self.force_fetch
-        # todo подумать как изменить этот кусок кода, чтобы формировать dict уже по единому алгоритму
-        return remove_empty_attributes(data=result)
+        return remove_empty_attributes(
+            data={
+                "serverTimestamp": from_int(self.server_timestamp),
+                "currentClientTimestamp": from_int(self.current_client_timestamp),
+                "tag": from_list(lambda x: to_class(Tag, x), self.tag),
+                "user": from_list(lambda x: to_class(User, x), self.user),
+                "budget": from_list(lambda x: to_class(Budget, x), self.budget),
+                "account": from_list(lambda x: to_class(Account, x), self.account),
+                "company": from_list(lambda x: to_class(Company, x), self.company),
+                "country": from_list(lambda x: to_class(Country, x), self.country),
+                "merchant": from_list(lambda x: to_class(Merchant, x), self.merchant),
+                "reminder": from_list(lambda x: to_class(Reminder, x), self.reminder),
+                "instrument": from_list(lambda x: to_class(Instrument, x), self.instrument),
+                "transaction": from_list(lambda x: to_class(Transaction, x), self.transaction),
+                "reminderMarker": from_list(lambda x: to_class(ReminderMarker, x), self.reminder_marker),
+                "deletion": from_list(lambda x: to_class(Deletion, x), self.deletion),
+                "forceFetch": self.force_fetch,
+            }
+        )
 
 
 def remove_empty_attributes(data: dict) -> dict:
-    return {k: v for k, v in data.items() if v not in [[], {}, None]}
+    return {k: v for k, v in data.items() if v}
