@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from .utils import from_int, from_none, from_str, from_union
+from .utils import check_dict_type, from_int, from_none, from_str, from_union
 
 
 @dataclass
@@ -13,8 +13,7 @@ class Country:
 
     @staticmethod
     def from_dict(obj: dict) -> 'Country':
-        if not isinstance(obj, dict):
-            raise TypeError(f"Expected dict, got {type(obj).__name__}")
+        check_dict_type(obj)
 
         return Country(
             id=from_int(obj.get("id")),
@@ -24,10 +23,9 @@ class Country:
         )
 
     def to_dict(self) -> dict:
-        result: dict = {
+        return {
             "id": from_int(self.id),
             "title": from_str(self.title),
             "currency": from_int(self.currency),
             "domain": from_union([from_none, from_str], self.domain),
         }
-        return result

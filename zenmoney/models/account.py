@@ -5,6 +5,7 @@ from uuid import UUID
 
 from .enums import BalanceCorrectionType, Interval, TypeEnum
 from .utils import (
+    check_dict_type,
     from_bool,
     from_datetime,
     from_float,
@@ -49,8 +50,7 @@ class Account:
 
     @staticmethod
     def from_dict(obj: Any) -> 'Account':
-        if not isinstance(obj, dict):
-            raise TypeError(f"Expected dict, got {type(obj).__name__}")
+        check_dict_type(obj)
 
         return Account(
             id=UUID(obj.get("id")),
@@ -82,33 +82,33 @@ class Account:
         )
 
     def to_dict(self) -> dict:
-        result: dict = {}
-        result["id"] = str(self.id)
-        result["type"] = to_enum(TypeEnum, self.type)
-        result["user"] = from_int(self.user)
-        result["title"] = from_str(self.title)
-        result["archive"] = from_bool(self.archive)
-        result["balance"] = to_float(self.balance)
-        result["changed"] = from_int(self.changed)
-        result["private"] = from_bool(self.private)
-        result["savings"] = from_bool(self.savings)
-        result["enableSMS"] = from_bool(self.enable_sms)
-        result["inBalance"] = from_bool(self.in_balance)
-        result["instrument"] = from_int(self.instrument)
-        result["creditLimit"] = to_float(self.credit_limit)
-        result["startBalance"] = to_float(self.start_balance)
-        result["enableCorrection"] = from_bool(self.enable_correction)
-        result["balanceCorrectionType"] = to_enum(BalanceCorrectionType, self.balance_correction_type)
-        result["role"] = from_union([from_none, from_int], self.role)
-        result["syncID"] = from_union([from_none, lambda x: from_list(from_str, x)], self.sync_id)
-        result["company"] = from_union([from_none, from_int], self.company)
-        result["percent"] = from_union([from_none, to_float], self.percent)
-        result["startDate"] = from_union([from_none, lambda x: x.isoformat()], self.start_date)
-        result["payoffStep"] = from_union([from_none, from_int], self.payoff_step)
-        result["endDateOffset"] = from_union([from_none, from_int], self.end_date_offset)
-        result["capitalization"] = from_union([from_bool, from_none], self.capitalization)
-        result["payoffInterval"] = from_union([from_none, lambda x: to_enum(Interval, x)], self.payoff_interval)
-        result["endDateOffsetInterval"] = from_union(
-            [from_none, lambda x: to_enum(Interval, x)], self.end_date_offset_interval
-        )
-        return result
+        return {
+            "id": str(self.id),
+            "type": to_enum(TypeEnum, self.type),
+            "user": from_int(self.user),
+            "title": from_str(self.title),
+            "archive": from_bool(self.archive),
+            "balance": to_float(self.balance),
+            "changed": from_int(self.changed),
+            "private": from_bool(self.private),
+            "savings": from_bool(self.savings),
+            "enableSMS": from_bool(self.enable_sms),
+            "inBalance": from_bool(self.in_balance),
+            "instrument": from_int(self.instrument),
+            "creditLimit": to_float(self.credit_limit),
+            "startBalance": to_float(self.start_balance),
+            "enableCorrection": from_bool(self.enable_correction),
+            "balanceCorrectionType": to_enum(BalanceCorrectionType, self.balance_correction_type),
+            "role": from_union([from_none, from_int], self.role),
+            "syncID": from_union([from_none, lambda x: from_list(from_str, x)], self.sync_id),
+            "company": from_union([from_none, from_int], self.company),
+            "percent": from_union([from_none, to_float], self.percent),
+            "startDate": from_union([from_none, lambda x: x.isoformat()], self.start_date),
+            "payoffStep": from_union([from_none, from_int], self.payoff_step),
+            "endDateOffset": from_union([from_none, from_int], self.end_date_offset),
+            "capitalization": from_union([from_bool, from_none], self.capitalization),
+            "payoffInterval": from_union([from_none, lambda x: to_enum(Interval, x)], self.payoff_interval),
+            "endDateOffsetInterval": from_union(
+                [from_none, lambda x: to_enum(Interval, x)], self.end_date_offset_interval
+            ),
+        }

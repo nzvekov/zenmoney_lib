@@ -3,7 +3,14 @@ from datetime import datetime
 from typing import Any, Optional
 from uuid import UUID
 
-from .utils import from_bool, from_datetime, from_int, from_none, from_union
+from .utils import (
+    check_dict_type,
+    from_bool,
+    from_datetime,
+    from_int,
+    from_none,
+    from_union,
+)
 
 
 @dataclass
@@ -21,8 +28,7 @@ class Budget:
 
     @staticmethod
     def from_dict(obj: Any) -> 'Budget':
-        if not isinstance(obj, dict):
-            raise TypeError(f"Expected dict, got {type(obj).__name__}")
+        check_dict_type(obj)
 
         return Budget(
             date=from_datetime(obj.get("date")),
@@ -38,15 +44,15 @@ class Budget:
         )
 
     def to_dict(self) -> dict:
-        result: dict = {}
-        result["date"] = self.date.isoformat()
-        result["user"] = from_int(self.user)
-        result["income"] = from_int(self.income)
-        result["changed"] = from_int(self.changed)
-        result["outcome"] = from_int(self.outcome)
-        result["incomeLock"] = from_bool(self.income_lock)
-        result["outcomeLock"] = from_bool(self.outcome_lock)
-        result["isIncomeForecast"] = from_bool(self.is_income_forecast)
-        result["isOutcomeForecast"] = from_bool(self.is_outcome_forecast)
-        result["tag"] = from_union([from_none, lambda x: str(x)], self.tag)
-        return result
+        return {
+            "date": self.date.isoformat(),
+            "user": from_int(self.user),
+            "income": from_int(self.income),
+            "changed": from_int(self.changed),
+            "outcome": from_int(self.outcome),
+            "incomeLock": from_bool(self.income_lock),
+            "outcomeLock": from_bool(self.outcome_lock),
+            "isIncomeForecast": from_bool(self.is_income_forecast),
+            "isOutcomeForecast": from_bool(self.is_outcome_forecast),
+            "tag": from_union([from_none, lambda x: str(x)], self.tag),
+        }

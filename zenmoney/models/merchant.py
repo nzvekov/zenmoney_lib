@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from uuid import UUID
 
-from .utils import from_int, from_str
+from .utils import check_dict_type, from_int, from_str
 
 
 @dataclass
@@ -13,8 +13,7 @@ class Merchant:
 
     @staticmethod
     def from_dict(obj: dict) -> 'Merchant':
-        if not isinstance(obj, dict):
-            raise TypeError(f"Expected dict, got {type(obj).__name__}")
+        check_dict_type(obj)
 
         return Merchant(
             id=UUID(obj.get("id")),
