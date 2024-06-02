@@ -2,11 +2,10 @@ from http import HTTPStatus
 from typing import Optional
 from urllib.parse import urlparse
 
-from models import Token
-
 from .base import BaseZenmoneyRequest
 from .constant import AUTH_URL, DEFAULT_TIMEOUT, REDIRECT_URL, TOKEN_URL
 from .exception import ZenmoneyRequestError
+from .models import Token
 from .utils import convert_response_to_json
 
 
