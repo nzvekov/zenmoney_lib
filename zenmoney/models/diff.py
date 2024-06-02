@@ -93,4 +93,4 @@ class Diff:
 
 
 def remove_empty_attributes(data: dict) -> dict:
-    return {k: v for k, v in data.items() if v}
+    return {k: v for k, v in data.items() if v not in ([], {}, None)}
