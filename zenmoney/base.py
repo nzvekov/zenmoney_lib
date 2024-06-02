@@ -6,7 +6,7 @@ from .exception import ZenmoneyRequestError
 
 
 class BaseZenmoneyRequest(object):
-    def __init__(self, timeout=DEFAULT_TIMEOUT):
+    def __init__(self, timeout: float | tuple[float, float] | tuple[float, None] | None = DEFAULT_TIMEOUT):
         self.session = requests.Session()
         self.timeout = timeout
 

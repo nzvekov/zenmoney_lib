@@ -4,7 +4,6 @@ from typing import Any, List, Optional
 from uuid import UUID
 
 from .enums import BalanceCorrectionType, Interval, TypeEnum
-from .mixins import BaseUserDictionaryObjectMixin
 from .utils import (
     from_bool,
     from_datetime,
@@ -20,7 +19,10 @@ from .utils import (
 
 
 @dataclass
-class Account(BaseUserDictionaryObjectMixin):
+class Account:
+    id: UUID
+    user: int
+    title: str
     type: TypeEnum
     archive: bool
     balance: float
@@ -33,6 +35,7 @@ class Account(BaseUserDictionaryObjectMixin):
     start_balance: float
     enable_correction: bool
     balance_correction_type: BalanceCorrectionType
+    changed: int
     role: Optional[int] = None
     sync_id: Optional[List[str]] = None
     company: Optional[int] = None

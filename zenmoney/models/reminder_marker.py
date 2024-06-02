@@ -1,10 +1,11 @@
 from dataclasses import dataclass
-from typing import Any, List, Optional
+from datetime import datetime
+from typing import List, Optional
 from uuid import UUID
 
 from .enums import State
-from .mixins import BaseRealOperationMixin
 from .utils import (
+    check_dict_type,
     from_bool,
     from_datetime,
     from_float,
@@ -19,7 +20,17 @@ from .utils import (
 
 
 @dataclass
-class ReminderMarker(BaseRealOperationMixin):
+class ReminderMarker:
+    id: UUID
+    user: int
+    date: datetime
+    income: float
+    outcome: float
+    income_account: UUID
+    outcome_account: UUID
+    income_instrument: int
+    outcome_instrument: int
+    changed: int
     state: State
     notify: bool
     reminder: UUID
@@ -30,9 +41,8 @@ class ReminderMarker(BaseRealOperationMixin):
     merchant: Optional[UUID] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'ReminderMarker':
-        if not isinstance(obj, dict):
-            raise TypeError(f"Expected dict, got {type(obj).__name__}")
+    def from_dict(obj: dict) -> 'ReminderMarker':
+        check_dict_type(obj)
 
         return ReminderMarker(
             id=UUID(obj.get("id")),
@@ -56,23 +66,23 @@ class ReminderMarker(BaseRealOperationMixin):
         )
 
     def to_dict(self) -> dict:
-        result: dict = {}
-        result["id"] = str(self.id)
-        result["date"] = self.date.isoformat()
-        result["user"] = from_int(self.user)
-        result["state"] = to_enum(State, self.state)
-        result["income"] = to_float(self.income)
-        result["notify"] = from_bool(self.notify)
-        result["changed"] = from_int(self.changed)
-        result["outcome"] = to_float(self.outcome)
-        result["reminder"] = str(self.reminder)
-        result["isForecast"] = from_bool(self.is_forecast)
-        result["incomeAccount"] = str(self.income_account)
-        result["outcomeAccount"] = str(self.outcome_account)
-        result["incomeInstrument"] = from_int(self.income_instrument)
-        result["outcomeInstrument"] = from_int(self.outcome_instrument)
-        result["tag"] = from_union([lambda x: from_list(lambda x: str(x), x), from_none], self.tag)
-        result["payee"] = from_union([from_none, from_str], self.payee)
-        result["comment"] = from_union([from_none, from_str], self.comment)
-        result["merchant"] = from_union([from_none, lambda x: str(x)], self.merchant)
-        return result
+        return {
+            "id": str(self.id),
+            "date": self.date.isoformat(),
+            "user": from_int(self.user),
+            "state": to_enum(State, self.state),
+            "income": to_float(self.income),
+            "notify": from_bool(self.notify),
+            "changed": from_int(self.changed),
+            "outcome": to_float(self.outcome),
+            "reminder": str(self.reminder),
+            "isForecast": from_bool(self.is_forecast),
+            "incomeAccount": str(self.income_account),
+            "outcomeAccount": str(self.outcome_account),
+            "incomeInstrument": from_int(self.income_instrument),
+            "outcomeInstrument": from_int(self.outcome_instrument),
+            "tag": from_union([lambda x: from_list(lambda x: str(x), x), from_none], self.tag),
+            "payee": from_union([from_none, from_str], self.payee),
+            "comment": from_union([from_none, from_str], self.comment),
+            "merchant": from_union([from_none, lambda x: str(x)], self.merchant),
+        }

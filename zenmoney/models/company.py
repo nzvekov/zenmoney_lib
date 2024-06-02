@@ -1,13 +1,15 @@
 from dataclasses import dataclass
 from typing import Any, Optional
 
-from .mixins import BaseServiceObjectMixin, ChangedMixin
 from .utils import from_bool, from_int, from_none, from_str, from_union
 
 
 @dataclass
-class Company(BaseServiceObjectMixin, ChangedMixin):
+class Company:
+    id: int
+    title: str
     deleted: bool
+    changed: int
     www: Optional[str] = None
     country: Optional[int] = None
     full_title: Optional[str] = None

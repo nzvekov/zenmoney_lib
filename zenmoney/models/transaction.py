@@ -1,10 +1,11 @@
 from dataclasses import dataclass
-from typing import Any, List, Optional
+from datetime import datetime
+from typing import List, Optional
 from uuid import UUID
 
 from .enums import Source
-from .mixins import BaseRealOperationMixin
 from .utils import (
+    check_dict_type,
     from_bool,
     from_datetime,
     from_float,
@@ -19,7 +20,17 @@ from .utils import (
 
 
 @dataclass
-class Transaction(BaseRealOperationMixin):
+class Transaction:
+    id: UUID
+    user: int
+    date: datetime
+    income: float
+    outcome: float
+    income_account: UUID
+    outcome_account: UUID
+    income_instrument: int
+    outcome_instrument: int
+    changed: int
     viewed: bool
     created: int
     deleted: bool
@@ -42,9 +53,8 @@ class Transaction(BaseRealOperationMixin):
     reminder_marker: Optional[UUID] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Transaction':
-        if not isinstance(obj, dict):
-            raise TypeError(f"Expected dict, got {type(obj).__name__}")
+    def from_dict(obj: dict) -> 'Transaction':
+        check_dict_type(obj)
 
         return Transaction(
             id=UUID(obj.get("id")),
@@ -80,35 +90,35 @@ class Transaction(BaseRealOperationMixin):
         )
 
     def to_dict(self) -> dict:
-        result: dict = {}
-        result["id"] = str(self.id)
-        result["date"] = self.date.isoformat()
-        result["user"] = from_int(self.user)
-        result["income"] = to_float(self.income)
-        result["viewed"] = from_bool(self.viewed)
-        result["changed"] = from_int(self.changed)
-        result["created"] = from_int(self.created)
-        result["deleted"] = from_bool(self.deleted)
-        result["outcome"] = to_float(self.outcome)
-        result["incomeAccount"] = str(self.income_account)
-        result["outcomeAccount"] = str(self.outcome_account)
-        result["incomeInstrument"] = from_int(self.income_instrument)
-        result["outcomeInstrument"] = from_int(self.outcome_instrument)
-        result["opIncomeInstrument"] = from_none(self.op_income_instrument)
-        result["opOutcomeInstrument"] = from_none(self.op_outcome_instrument)
-        result["tag"] = from_union([lambda x: from_list(lambda x: str(x), x), from_none], self.tag)
-        result["hold"] = from_union([from_bool, from_none], self.hold)
-        result["payee"] = from_union([from_none, from_str], self.payee)
-        result["qrCode"] = from_union([from_none, from_str], self.qr_code)
-        result["source"] = from_union([from_none, lambda x: to_enum(Source, x)], self.source)
-        result["comment"] = from_union([from_none, from_str], self.comment)
-        result["latitude"] = from_union([from_none, to_float], self.latitude)
-        result["merchant"] = from_union([from_none, lambda x: str(x)], self.merchant)
-        result["opIncome"] = from_union([from_none, from_int], self.op_income)
-        result["longitude"] = from_union([from_none, to_float], self.longitude)
-        result["opOutcome"] = from_union([from_none, from_int], self.op_outcome)
-        result["incomeBankID"] = from_union([from_none, from_str], self.income_bank_id)
-        result["originalPayee"] = from_union([from_none, from_str], self.original_payee)
-        result["outcomeBankID"] = from_union([from_none, from_str], self.outcome_bank_id)
-        result["reminderMarker"] = from_union([from_none, lambda x: str(x)], self.reminder_marker)
-        return result
+        return {
+            "id": str(self.id),
+            "date": self.date.isoformat(),
+            "user": from_int(self.user),
+            "income": to_float(self.income),
+            "viewed": from_bool(self.viewed),
+            "changed": from_int(self.changed),
+            "created": from_int(self.created),
+            "deleted": from_bool(self.deleted),
+            "outcome": to_float(self.outcome),
+            "incomeAccount": str(self.income_account),
+            "outcomeAccount": str(self.outcome_account),
+            "incomeInstrument": from_int(self.income_instrument),
+            "outcomeInstrument": from_int(self.outcome_instrument),
+            "opIncomeInstrument": from_none(self.op_income_instrument),
+            "opOutcomeInstrument": from_none(self.op_outcome_instrument),
+            "tag": from_union([lambda x: from_list(lambda x: str(x), x), from_none], self.tag),
+            "hold": from_union([from_bool, from_none], self.hold),
+            "payee": from_union([from_none, from_str], self.payee),
+            "qrCode": from_union([from_none, from_str], self.qr_code),
+            "source": from_union([from_none, lambda x: to_enum(Source, x)], self.source),
+            "comment": from_union([from_none, from_str], self.comment),
+            "latitude": from_union([from_none, to_float], self.latitude),
+            "merchant": from_union([from_none, lambda x: str(x)], self.merchant),
+            "opIncome": from_union([from_none, from_int], self.op_income),
+            "longitude": from_union([from_none, to_float], self.longitude),
+            "opOutcome": from_union([from_none, from_int], self.op_outcome),
+            "incomeBankID": from_union([from_none, from_str], self.income_bank_id),
+            "originalPayee": from_union([from_none, from_str], self.original_payee),
+            "outcomeBankID": from_union([from_none, from_str], self.outcome_bank_id),
+            "reminderMarker": from_union([from_none, lambda x: str(x)], self.reminder_marker),
+        }

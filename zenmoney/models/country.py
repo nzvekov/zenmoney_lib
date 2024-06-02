@@ -1,17 +1,18 @@
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Optional
 
-from .mixins import BaseServiceObjectMixin
 from .utils import from_int, from_none, from_str, from_union
 
 
 @dataclass
-class Country(BaseServiceObjectMixin):
+class Country:
+    id: int
+    title: str
     currency: int
     domain: Optional[str] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Country':
+    def from_dict(obj: dict) -> 'Country':
         if not isinstance(obj, dict):
             raise TypeError(f"Expected dict, got {type(obj).__name__}")
 
@@ -23,9 +24,10 @@ class Country(BaseServiceObjectMixin):
         )
 
     def to_dict(self) -> dict:
-        result: dict = {}
-        result["id"] = from_int(self.id)
-        result["title"] = from_str(self.title)
-        result["currency"] = from_int(self.currency)
-        result["domain"] = from_union([from_none, from_str], self.domain)
+        result: dict = {
+            "id": from_int(self.id),
+            "title": from_str(self.title),
+            "currency": from_int(self.currency),
+            "domain": from_union([from_none, from_str], self.domain),
+        }
         return result

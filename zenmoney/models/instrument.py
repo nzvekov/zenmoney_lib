@@ -1,20 +1,20 @@
 from dataclasses import dataclass
-from typing import Any
 
-from .mixins import BaseServiceObjectMixin, ChangedMixin
-from .utils import from_float, from_int, from_str, to_float
+from .utils import check_dict_type, from_float, from_int, from_str, to_float
 
 
 @dataclass
-class Instrument(BaseServiceObjectMixin, ChangedMixin):
+class Instrument:
+    id: int
+    title: str
     rate: float
     symbol: str
+    changed: int
     short_title: str
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Instrument':
-        if not isinstance(obj, dict):
-            raise TypeError(f"Expected dict, got {type(obj).__name__}")
+    def from_dict(obj: dict) -> 'Instrument':
+        check_dict_type(obj)
 
         return Instrument(
             id=from_int(obj.get("id")),
@@ -26,11 +26,11 @@ class Instrument(BaseServiceObjectMixin, ChangedMixin):
         )
 
     def to_dict(self) -> dict:
-        result: dict = {}
-        result["id"] = from_int(self.id)
-        result["rate"] = to_float(self.rate)
-        result["title"] = from_str(self.title)
-        result["symbol"] = from_str(self.symbol)
-        result["changed"] = from_int(self.changed)
-        result["shortTitle"] = from_str(self.short_title)
-        return result
+        return {
+            "id": from_int(self.id),
+            "rate": to_float(self.rate),
+            "title": from_str(self.title),
+            "symbol": from_str(self.symbol),
+            "changed": from_int(self.changed),
+            "shortTitle": from_str(self.short_title),
+        }
