@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, List, Optional
+from typing import List, Optional
 from uuid import UUID
 
 from .enums import Interval
-from .mixins import BaseOperationMixin
 from .utils import (
+    check_dict_type,
     from_bool,
     from_datetime,
     from_float,
@@ -20,7 +20,16 @@ from .utils import (
 
 
 @dataclass
-class Reminder(BaseOperationMixin):
+class Reminder:
+    id: UUID
+    user: int
+    income: float
+    outcome: float
+    income_account: UUID
+    outcome_account: UUID
+    income_instrument: int
+    outcome_instrument: int
+    changed: int
     step: int
     notify: bool
     points: List[int]
@@ -33,9 +42,8 @@ class Reminder(BaseOperationMixin):
     merchant: Optional[UUID] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Reminder':
-        if not isinstance(obj, dict):
-            raise TypeError(f"Expected dict, got {type(obj).__name__}")
+    def from_dict(obj: dict) -> 'Reminder':
+        check_dict_type(obj)
 
         return Reminder(
             id=UUID(obj.get("id")),
@@ -60,24 +68,24 @@ class Reminder(BaseOperationMixin):
         )
 
     def to_dict(self) -> dict:
-        result: dict = {}
-        result["id"] = str(self.id)
-        result["step"] = from_int(self.step)
-        result["user"] = from_int(self.user)
-        result["income"] = to_float(self.income)
-        result["notify"] = from_bool(self.notify)
-        result["points"] = from_list(from_int, self.points)
-        result["changed"] = from_int(self.changed)
-        result["outcome"] = to_float(self.outcome)
-        result["startDate"] = self.start_date.isoformat()
-        result["incomeAccount"] = str(self.income_account)
-        result["outcomeAccount"] = str(self.outcome_account)
-        result["incomeInstrument"] = from_int(self.income_instrument)
-        result["outcomeInstrument"] = from_int(self.outcome_instrument)
-        result["tag"] = from_union([lambda x: from_list(lambda x: str(x), x), from_none], self.tag)
-        result["payee"] = from_union([from_none, from_str], self.payee)
-        result["comment"] = from_union([from_none, from_str], self.comment)
-        result["endDate"] = from_union([from_none, lambda x: x.isoformat()], self.end_date)
-        result["interval"] = from_union([from_none, lambda x: to_enum(Interval, x)], self.interval)
-        result["merchant"] = from_union([from_none, lambda x: str(x)], self.merchant)
-        return result
+        return {
+            "id": str(self.id),
+            "step": from_int(self.step),
+            "user": from_int(self.user),
+            "income": to_float(self.income),
+            "notify": from_bool(self.notify),
+            "points": from_list(from_int, self.points),
+            "changed": from_int(self.changed),
+            "outcome": to_float(self.outcome),
+            "startDate": self.start_date.isoformat(),
+            "incomeAccount": str(self.income_account),
+            "outcomeAccount": str(self.outcome_account),
+            "incomeInstrument": from_int(self.income_instrument),
+            "outcomeInstrument": from_int(self.outcome_instrument),
+            "tag": from_union([lambda x: from_list(lambda x: str(x), x), from_none], self.tag),
+            "payee": from_union([from_none, from_str], self.payee),
+            "comment": from_union([from_none, from_str], self.comment),
+            "endDate": from_union([from_none, lambda x: x.isoformat()], self.end_date),
+            "interval": from_union([from_none, lambda x: to_enum(Interval, x)], self.interval),
+            "merchant": from_union([from_none, lambda x: str(x)], self.merchant),
+        }

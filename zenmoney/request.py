@@ -6,7 +6,12 @@ from .utils import convert_response_to_json
 
 class ZenmoneyRequest(BaseZenmoneyRequest):
     def __init__(
-        self, token: str, *, timeout: int = DEFAULT_TIMEOUT, diff_url: str = DIFF_URL, suggest_url: str = SUGGEST_URL
+        self,
+        token: str,
+        *,
+        timeout: float | tuple[float, float] | tuple[float, None] | None = DEFAULT_TIMEOUT,
+        diff_url: str = DIFF_URL,
+        suggest_url: str = SUGGEST_URL,
     ):
         super().__init__(timeout=timeout)
         self._diff_url = diff_url

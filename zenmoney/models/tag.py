@@ -1,28 +1,38 @@
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Optional
 from uuid import UUID
 
-from .mixins import BaseUserDictionaryObjectMixin
-from .utils import from_bool, from_int, from_none, from_str, from_union, is_type
+from .utils import (
+    check_dict_type,
+    from_bool,
+    from_int,
+    from_none,
+    from_str,
+    from_union,
+    is_type,
+)
 
 
 @dataclass
-class Tag(BaseUserDictionaryObjectMixin):
+class Tag:
+    id: UUID
+    user: int
+    title: str
     color: str
     picture: str
     show_income: bool
     show_outcome: bool
     budget_income: bool
     budget_outcome: bool
+    changed: int
     static_id: Optional[int] = None
     icon: Optional[str] = None
     parent: Optional[UUID] = None
     required: Optional[bool] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Tag':
-        if not isinstance(obj, dict):
-            raise TypeError(f"Expected dict, got {type(obj).__name__}")
+    def from_dict(obj: dict) -> 'Tag':
+        check_dict_type(obj)
 
         return Tag(
             id=UUID(obj.get("id")),
@@ -42,25 +52,25 @@ class Tag(BaseUserDictionaryObjectMixin):
         )
 
     def to_dict(self) -> dict:
-        result: dict = {}
-        result["id"] = str(self.id)
-        result["user"] = from_int(self.user)
-        result["color"] = from_none(self.color)
-        result["title"] = from_str(self.title)
-        result["changed"] = from_int(self.changed)
-        result["picture"] = from_none(self.picture)
-        result["staticId"] = from_union(
-            [
-                lambda x: from_none((lambda x: is_type(type(None), x))(x)),
-                lambda x: from_str((lambda x: str((lambda x: is_type(int, x))(x)))(x)),
-            ],
-            self.static_id,
-        )
-        result["showIncome"] = from_bool(self.show_income)
-        result["showOutcome"] = from_bool(self.show_outcome)
-        result["budgetIncome"] = from_bool(self.budget_income)
-        result["budgetOutcome"] = from_bool(self.budget_outcome)
-        result["icon"] = from_union([from_none, from_str], self.icon)
-        result["parent"] = from_union([from_none, lambda x: str(x)], self.parent)
-        result["required"] = from_union([from_bool, from_none], self.required)
-        return result
+        return {
+            "id": str(self.id),
+            "user": from_int(self.user),
+            "color": from_none(self.color),
+            "title": from_str(self.title),
+            "changed": from_int(self.changed),
+            "picture": from_none(self.picture),
+            "staticId": from_union(
+                [
+                    lambda x: from_none((lambda x: is_type(type(None), x))(x)),
+                    lambda x: from_str((lambda x: str((lambda x: is_type(int, x))(x)))(x)),
+                ],
+                self.static_id,
+            ),
+            "showIncome": from_bool(self.show_income),
+            "showOutcome": from_bool(self.show_outcome),
+            "budgetIncome": from_bool(self.budget_income),
+            "budgetOutcome": from_bool(self.budget_outcome),
+            "icon": from_union([from_none, from_str], self.icon),
+            "parent": from_union([from_none, lambda x: str(x)], self.parent),
+            "required": from_union([from_bool, from_none], self.required),
+        }
