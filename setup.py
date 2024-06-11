@@ -7,7 +7,7 @@ with open('README.md') as f:
     long_description = f.read()
 
 setup(
-    name='zenmoney',
+    name='zenmoney-py',
     version="0.0.1",
     description='Library for zenmoney.ru API',
     long_description=long_description,
