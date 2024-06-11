@@ -1,8 +1,5 @@
 from setuptools import find_packages, setup
 
-with open("requirements.txt", encoding="utf-8") as r:
-    requires = [i.strip() for i in r]
-
 with open('README.md') as f:
     long_description = f.read()
 
@@ -16,7 +13,7 @@ setup(
     license='MIT',
     author='Nikita Zvekov',
     author_email='cooper30@mail.ru',
-    install_requires=requires,
+    install_requires=['requests'],
     packages=find_packages(),
     classifiers=[
         'Development Status :: 4 - Beta',
