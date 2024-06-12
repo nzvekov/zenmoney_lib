@@ -6,7 +6,7 @@ There is a simplest way to start:
 ```python
 import time
 
-from src.zenmoney import Diff, ZenmoneyOAuth2, ZenmoneyRequest
+from zenmoney import Diff, ZenmoneyOAuth2, ZenmoneyRequest
 
 oauth = ZenmoneyOAuth2('your_consumer_key', 'your_consumer_secret', 'user_name', 'user_password')
 zenmoney_client = ZenmoneyRequest(oauth.token.access_token)
