@@ -16,9 +16,6 @@ setup(
     install_requires=['requests'],
     packages=['zenmoney'],
     package_dir={'': 'src'},
-    package_data={
-        'zenmoney': ['py.typed'],
-    },
     classifiers=[
         'Development Status :: 4 - Beta',
         'License :: OSI Approved :: MIT License',
