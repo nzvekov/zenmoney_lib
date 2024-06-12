@@ -1,11 +1,11 @@
-from setuptools import find_packages, setup
+from setuptools import setup
 
 with open('README.md') as f:
     long_description = f.read()
 
 setup(
     name='zenmoney-py',
-    version="0.0.1",
+    version="1.0.3",
     description='Library for zenmoney.ru API',
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -14,7 +14,11 @@ setup(
     author='Nikita Zvekov',
     author_email='cooper30@mail.ru',
     install_requires=['requests'],
-    packages=find_packages(),
+    packages=['zenmoney'],
+    package_dir={'': 'src'},
+    package_data={
+        'zenmoney': ['py.typed'],
+    },
     classifiers=[
         'Development Status :: 4 - Beta',
         'License :: OSI Approved :: MIT License',
