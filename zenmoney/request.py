@@ -1,3 +1,5 @@
+from exception import ZenmoneyRequestError
+
 from .base import BaseZenmoneyRequest
 from .constant import DEFAULT_TIMEOUT, DIFF_URL, SUGGEST_URL
 from .models import Diff
@@ -23,7 +25,11 @@ class ZenmoneyRequest(BaseZenmoneyRequest):
         self.session.headers['Content-Type'] = 'application/json'
 
     def raw_diff(self, data: dict) -> dict:
-        return convert_response_to_json(self._post(self._diff_url, json=data))
+        response_json = convert_response_to_json(self._post(self._diff_url, json=data))
+        error_text = response_json.get("error")
+        if error_text:
+            raise ZenmoneyRequestError(f"Request failed: {error_text}")
+        return response_json
 
     def diff(self, params: Diff) -> Diff:
         return Diff.from_dict(self.raw_diff(params.to_dict()))
