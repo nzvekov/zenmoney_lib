@@ -15,11 +15,11 @@ class User:
     paid_till: int
     country_code: str
     plan_settings: str
-    subscription: str
     month_start_day: int
     plan_balance_mode: str
     is_forecast_enabled: bool
     subscription_renewal_date: None
+    subscription: Optional[str] = None
     parent: Optional[int] = None
 
     @staticmethod
@@ -36,11 +36,11 @@ class User:
             paid_till=from_int(obj.get("paidTill")),
             country_code=from_str(obj.get("countryCode")),
             plan_settings=from_str(obj.get("planSettings")),
-            subscription=from_str(obj.get("subscription")),
             month_start_day=from_int(obj.get("monthStartDay")),
             plan_balance_mode=from_str(obj.get("planBalanceMode")),
             is_forecast_enabled=from_bool(obj.get("isForecastEnabled")),
             subscription_renewal_date=from_none(obj.get("subscriptionRenewalDate")),
+            subscription=from_union([from_none, from_str], obj.get("subscription")),
             parent=from_union([from_none, from_int], obj.get("parent")),
         )
 
@@ -55,10 +55,10 @@ class User:
             "paidTill": from_int(self.paid_till),
             "countryCode": from_str(self.country_code),
             "planSettings": from_str(self.plan_settings),
-            "subscription": from_str(self.subscription),
             "monthStartDay": from_int(self.month_start_day),
             "planBalanceMode": from_str(self.plan_balance_mode),
             "isForecastEnabled": from_bool(self.is_forecast_enabled),
             "subscriptionRenewalDate": from_none(self.subscription_renewal_date),
+            "subscription": from_union([from_none, from_str], self.subscription),
             "parent": from_union([from_none, from_int], self.parent),
         }
