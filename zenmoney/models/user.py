@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Optional
 
 from .utils import check_dict_type, from_bool, from_int, from_none, from_str, from_union
 
@@ -18,9 +17,9 @@ class User:
     month_start_day: int
     plan_balance_mode: str
     is_forecast_enabled: bool
-    subscription_renewal_date: None
-    subscription: Optional[str] = None
-    parent: Optional[int] = None
+    subscription_renewal_date: int | None = None
+    subscription: str | None = None
+    parent: int | None = None
 
     @staticmethod
     def from_dict(obj: dict) -> 'User':

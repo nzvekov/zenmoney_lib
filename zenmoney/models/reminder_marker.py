@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List, Optional
+from typing import List
 from uuid import UUID
 
 from .enums import State
@@ -35,10 +35,10 @@ class ReminderMarker:
     notify: bool
     reminder: UUID
     is_forecast: bool
-    tag: Optional[List[UUID]] = None
-    payee: Optional[str] = None
-    comment: Optional[str] = None
-    merchant: Optional[UUID] = None
+    tag: List[UUID] | None = None
+    payee: str | None = None
+    comment: str | None = None
+    merchant: UUID | None = None
 
     @staticmethod
     def from_dict(obj: dict) -> 'ReminderMarker':
