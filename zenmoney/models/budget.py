@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Optional
 from uuid import UUID
 
 from .utils import (
@@ -24,10 +23,10 @@ class Budget:
     outcome_lock: bool
     is_income_forecast: bool
     is_outcome_forecast: bool
-    tag: Optional[UUID] = None
+    tag: UUID | None = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Budget':
+    def from_dict(obj: dict) -> 'Budget':
         check_dict_type(obj)
 
         return Budget(
