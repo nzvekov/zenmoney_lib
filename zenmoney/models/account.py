@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, List, Optional
+from typing import List
 from uuid import UUID
 
 from .enums import BalanceCorrectionType, Interval, TypeEnum
@@ -36,20 +36,20 @@ class Account:
     enable_correction: bool
     balance_correction_type: BalanceCorrectionType
     changed: int
-    savings: Optional[bool] = None
-    role: Optional[int] = None
-    sync_id: Optional[List[str]] = None
-    company: Optional[int] = None
-    percent: Optional[float] = None
-    start_date: Optional[datetime] = None
-    payoff_step: Optional[int] = None
-    end_date_offset: Optional[int] = None
-    capitalization: Optional[bool] = None
-    payoff_interval: Optional[Interval] = None
-    end_date_offset_interval: Optional[Interval] = None
+    savings: bool | None = None
+    role: int | None = None
+    sync_id: List[str] | None = None
+    company: int | None = None
+    percent: float | None = None
+    start_date: datetime | None = None
+    payoff_step: int | None = None
+    end_date_offset: int | None = None
+    capitalization: bool | None = None
+    payoff_interval: Interval | None = None
+    end_date_offset_interval: Interval | None = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Account':
+    def from_dict(obj: dict) -> 'Account':
         check_dict_type(obj)
 
         return Account(

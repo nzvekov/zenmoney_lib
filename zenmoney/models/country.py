@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Optional
 
 from .utils import check_dict_type, from_int, from_none, from_str, from_union
 
@@ -9,7 +8,7 @@ class Country:
     id: int
     title: str
     currency: int
-    domain: Optional[str] = None
+    domain: str | None = None
 
     @staticmethod
     def from_dict(obj: dict) -> 'Country':
