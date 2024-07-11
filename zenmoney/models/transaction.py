@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List, Optional
+from typing import List
 from uuid import UUID
 
 from .enums import Source
@@ -34,23 +34,23 @@ class Transaction:
     viewed: bool
     created: int
     deleted: bool
-    op_income_instrument: Optional[int] = None
-    op_outcome_instrument: Optional[int] = None
-    tag: Optional[List[UUID]] = None
-    hold: Optional[bool] = None
-    payee: Optional[str] = None
-    qr_code: Optional[str] = None
-    source: Optional[Source] = None
-    comment: Optional[str] = None
-    latitude: Optional[float] = None
-    merchant: Optional[UUID] = None
-    op_income: Optional[int] = None
-    longitude: Optional[float] = None
-    op_outcome: Optional[int] = None
-    income_bank_id: Optional[str] = None
-    original_payee: Optional[str] = None
-    outcome_bank_id: Optional[str] = None
-    reminder_marker: Optional[UUID] = None
+    op_income_instrument: int | None = None
+    op_outcome_instrument: int | None = None
+    tag: List[UUID] | None = None
+    hold: bool | None = None
+    payee: str | None = None
+    qr_code: str | None = None
+    source: Source | None = None
+    comment: str | None = None
+    latitude: float | None = None
+    merchant: UUID | None = None
+    op_income: int | None = None
+    longitude: float | None = None
+    op_outcome: int | None = None
+    income_bank_id: str | None = None
+    original_payee: str | None = None
+    outcome_bank_id: str | None = None
+    reminder_marker: UUID | None = None
 
     @staticmethod
     def from_dict(obj: dict) -> 'Transaction':

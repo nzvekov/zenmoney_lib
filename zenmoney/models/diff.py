@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List
 
 from .account import Account
 from .budget import Budget
@@ -26,19 +26,19 @@ from .utils import (
 class Diff:
     server_timestamp: int
     current_client_timestamp: int
-    tag: Optional[List[Tag]] = None
-    user: Optional[List[User]] = None
-    budget: Optional[List[Budget]] = None
-    account: Optional[List[Account]] = None
-    company: Optional[List[Company]] = None
-    country: Optional[List[Country]] = None
-    merchant: Optional[List[Merchant]] = None
-    reminder: Optional[List[Reminder]] = None
-    instrument: Optional[List[Instrument]] = None
-    transaction: Optional[List[Transaction]] = None
-    reminder_marker: Optional[List[ReminderMarker]] = None
-    deletion: Optional[List[Deletion]] = None
-    force_fetch: Optional[List[str]] = None
+    tag: List[Tag] | None = None
+    user: List[User] | None = None
+    budget: List[Budget] | None = None
+    account: List[Account] | None = None
+    company: List[Company] | None = None
+    country: List[Country] | None = None
+    merchant: List[Merchant] | None = None
+    reminder: List[Reminder] | None = None
+    instrument: List[Instrument] | None = None
+    transaction: List[Transaction] | None = None
+    reminder_marker: List[ReminderMarker] | None = None
+    deletion: List[Deletion] | None = None
+    force_fetch: List[str] | None = None
 
     def __post_init__(self):
         if self.force_fetch:

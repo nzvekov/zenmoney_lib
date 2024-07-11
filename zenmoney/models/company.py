@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Any, Optional
 
 from .utils import check_dict_type, from_bool, from_int, from_none, from_str, from_union
 
@@ -10,13 +9,13 @@ class Company:
     title: str
     deleted: bool
     changed: int
-    www: Optional[str] = None
-    country: Optional[int] = None
-    full_title: Optional[str] = None
-    country_code: Optional[str] = None
+    www: str | None = None
+    country: int | None = None
+    full_title: str | None = None
+    country_code: str | None = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Company':
+    def from_dict(obj: dict) -> 'Company':
         check_dict_type(obj)
 
         return Company(

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List, Optional
+from typing import List
 from uuid import UUID
 
 from .enums import Interval
@@ -34,12 +34,12 @@ class Reminder:
     notify: bool
     points: List[int]
     start_date: datetime
-    tag: Optional[List[UUID]] = None
-    payee: Optional[str] = None
-    comment: Optional[str] = None
-    end_date: Optional[datetime] = None
-    interval: Optional[Interval] = None
-    merchant: Optional[UUID] = None
+    tag: List[UUID] | None = None
+    payee: str | None = None
+    comment: str | None = None
+    end_date: datetime | None = None
+    interval: Interval | None = None
+    merchant: UUID | None = None
 
     @staticmethod
     def from_dict(obj: dict) -> 'Reminder':

@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Optional
 from uuid import UUID
 
 from .utils import (
@@ -25,10 +24,10 @@ class Tag:
     budget_income: bool
     budget_outcome: bool
     changed: int
-    static_id: Optional[int] = None
-    icon: Optional[str] = None
-    parent: Optional[UUID] = None
-    required: Optional[bool] = None
+    static_id: int | None = None
+    icon: str | None = None
+    parent: UUID | None = None
+    required: bool | None = None
 
     @staticmethod
     def from_dict(obj: dict) -> 'Tag':
