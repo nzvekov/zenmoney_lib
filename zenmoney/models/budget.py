@@ -47,9 +47,9 @@ class Budget:
         return {
             "date": self.date.isoformat(),
             "user": from_int(self.user),
-            "income": from_int(self.income),
+            "income": from_float(self.income),
             "changed": from_int(self.changed),
-            "outcome": from_int(self.outcome),
+            "outcome": from_float(self.outcome),
             "incomeLock": from_bool(self.income_lock),
             "outcomeLock": from_bool(self.outcome_lock),
             "isIncomeForecast": from_bool(self.is_income_forecast),
