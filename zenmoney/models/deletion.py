@@ -18,10 +18,9 @@ class Deletion:
     def from_dict(obj: dict) -> 'Deletion':
         check_dict_type(obj)
 
-        try:
+        obj_id = obj.get("id")
+        if isinstance(obj_id, str):
             obj_id = UUID(obj.get("id"))
-        except ValueError:
-            obj_id = int(obj.get("id"))
 
         return Deletion(
             id=obj_id,
