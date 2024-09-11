@@ -30,8 +30,12 @@ class Deletion:
         )
 
     def to_dict(self) -> dict:
+        obj_id = self.id
+        if isinstance(obj_id, UUID):
+            obj_id = str(self.id)
+
         return {
-            "id": self.id,
+            "id": obj_id,
             "object": from_str(self.object),
             "stamp": from_int(self.stamp),
             "user": from_int(self.user),
