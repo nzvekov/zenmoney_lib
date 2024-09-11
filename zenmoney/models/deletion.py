@@ -6,7 +6,7 @@ from .utils import check_dict_type, check_object_class_name_list, from_int, from
 
 @dataclass
 class Deletion:
-    id: UUID
+    id: UUID | int
     object: str
     stamp: int
     user: int
@@ -18,8 +18,13 @@ class Deletion:
     def from_dict(obj: dict) -> 'Deletion':
         check_dict_type(obj)
 
+        try:
+            obj_id = UUID(obj.get("id"))
+        except ValueError:
+            obj_id = int(obj.get("id"))
+
         return Deletion(
-            id=UUID(obj.get("id")),
+            id=obj_id,
             object=from_str(obj.get("object")),
             stamp=from_int(obj.get("stamp")),
             user=from_int(obj.get("user")),
