@@ -31,7 +31,7 @@ class Deletion:
 
     def to_dict(self) -> dict:
         return {
-            "id": from_str(self.id),
+            "id": self.id,
             "object": from_str(self.object),
             "stamp": from_int(self.stamp),
             "user": from_int(self.user),
