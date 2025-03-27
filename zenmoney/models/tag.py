@@ -23,7 +23,7 @@ class Tag:
     budget_income: bool
     budget_outcome: bool
     changed: int
-    color: str | None = None
+    color: int | None = None
     static_id: int | None = None
     icon: str | None = None
     parent: UUID | None = None

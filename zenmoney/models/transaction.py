@@ -44,9 +44,9 @@ class Transaction:
     comment: str | None = None
     latitude: float | None = None
     merchant: UUID | None = None
-    op_income: int | None = None
+    op_income: float | None = None
     longitude: float | None = None
-    op_outcome: int | None = None
+    op_outcome: float | None = None
     income_bank_id: str | None = None
     original_payee: str | None = None
     outcome_bank_id: str | None = None
