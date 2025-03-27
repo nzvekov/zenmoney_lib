@@ -44,9 +44,9 @@ class Transaction:
     comment: str | None = None
     latitude: float | None = None
     merchant: UUID | None = None
-    op_income: int | None = None
+    op_income: float | None = None
     longitude: float | None = None
-    op_outcome: int | None = None
+    op_outcome: float | None = None
     income_bank_id: str | None = None
     original_payee: str | None = None
     outcome_bank_id: str | None = None
@@ -70,8 +70,8 @@ class Transaction:
             outcome_account=UUID(obj.get("outcomeAccount")),
             income_instrument=from_int(obj.get("incomeInstrument")),
             outcome_instrument=from_int(obj.get("outcomeInstrument")),
-            op_income_instrument=from_none(obj.get("opIncomeInstrument")),
-            op_outcome_instrument=from_none(obj.get("opOutcomeInstrument")),
+            op_income_instrument=from_union([from_none, from_int], obj.get("opIncomeInstrument")),
+            op_outcome_instrument=from_union([from_none, from_int], obj.get("opOutcomeInstrument")),
             tag=from_union([lambda x: from_list(lambda x: UUID(x), x), from_none], obj.get("tag")),
             hold=from_union([from_bool, from_none], obj.get("hold")),
             payee=from_union([from_none, from_str], obj.get("payee")),
@@ -80,9 +80,9 @@ class Transaction:
             comment=from_union([from_none, from_str], obj.get("comment")),
             latitude=from_union([from_none, from_float], obj.get("latitude")),
             merchant=from_union([from_none, lambda x: UUID(x)], obj.get("merchant")),
-            op_income=from_union([from_none, from_int], obj.get("opIncome")),
+            op_income=from_union([from_none, from_float], obj.get("opIncome")),
             longitude=from_union([from_none, from_float], obj.get("longitude")),
-            op_outcome=from_union([from_none, from_int], obj.get("opOutcome")),
+            op_outcome=from_union([from_none, from_float], obj.get("opOutcome")),
             income_bank_id=from_union([from_none, from_str], obj.get("incomeBankID")),
             original_payee=from_union([from_none, from_str], obj.get("originalPayee")),
             outcome_bank_id=from_union([from_none, from_str], obj.get("outcomeBankID")),
@@ -104,8 +104,8 @@ class Transaction:
             "outcomeAccount": str(self.outcome_account),
             "incomeInstrument": from_int(self.income_instrument),
             "outcomeInstrument": from_int(self.outcome_instrument),
-            "opIncomeInstrument": from_none(self.op_income_instrument),
-            "opOutcomeInstrument": from_none(self.op_outcome_instrument),
+            "opIncomeInstrument": from_union([from_none, from_int], self.op_income_instrument),
+            "opOutcomeInstrument": from_union([from_none, from_int], self.op_outcome_instrument),
             "tag": from_union([lambda x: from_list(lambda x: str(x), x), from_none], self.tag),
             "hold": from_union([from_bool, from_none], self.hold),
             "payee": from_union([from_none, from_str], self.payee),
@@ -114,9 +114,9 @@ class Transaction:
             "comment": from_union([from_none, from_str], self.comment),
             "latitude": from_union([from_none, to_float], self.latitude),
             "merchant": from_union([from_none, lambda x: str(x)], self.merchant),
-            "opIncome": from_union([from_none, from_int], self.op_income),
+            "opIncome": from_union([from_none, from_float], self.op_income),
             "longitude": from_union([from_none, to_float], self.longitude),
-            "opOutcome": from_union([from_none, from_int], self.op_outcome),
+            "opOutcome": from_union([from_none, from_float], self.op_outcome),
             "incomeBankID": from_union([from_none, from_str], self.income_bank_id),
             "originalPayee": from_union([from_none, from_str], self.original_payee),
             "outcomeBankID": from_union([from_none, from_str], self.outcome_bank_id),
