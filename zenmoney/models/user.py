@@ -7,7 +7,6 @@ from .utils import check_dict_type, from_bool, from_int, from_none, from_str, fr
 class User:
     id: int
     email: str
-    login: str
     changed: int
     country: int
     currency: int
@@ -17,6 +16,7 @@ class User:
     month_start_day: int
     plan_balance_mode: str
     is_forecast_enabled: bool
+    login: str | None = None
     subscription_renewal_date: int | None = None
     subscription: str | None = None
     parent: int | None = None
@@ -28,7 +28,6 @@ class User:
         return User(
             id=from_int(obj.get("id")),
             email=from_str(obj.get("email")),
-            login=from_str(obj.get("login")),
             changed=from_int(obj.get("changed")),
             country=from_int(obj.get("country")),
             currency=from_int(obj.get("currency")),
@@ -38,6 +37,7 @@ class User:
             month_start_day=from_int(obj.get("monthStartDay")),
             plan_balance_mode=from_str(obj.get("planBalanceMode")),
             is_forecast_enabled=from_bool(obj.get("isForecastEnabled")),
+            login=from_union([from_none, from_str], obj.get("login")),
             subscription_renewal_date=from_none(obj.get("subscriptionRenewalDate")),
             subscription=from_union([from_none, from_str], obj.get("subscription")),
             parent=from_union([from_none, from_int], obj.get("parent")),
@@ -47,7 +47,6 @@ class User:
         return {
             "id": from_int(self.id),
             "email": from_str(self.email),
-            "login": from_str(self.login),
             "changed": from_int(self.changed),
             "country": from_int(self.country),
             "currency": from_int(self.currency),
@@ -57,6 +56,7 @@ class User:
             "monthStartDay": from_int(self.month_start_day),
             "planBalanceMode": from_str(self.plan_balance_mode),
             "isForecastEnabled": from_bool(self.is_forecast_enabled),
+            "login": from_union([from_none, from_str], self.login),
             "subscriptionRenewalDate": from_none(self.subscription_renewal_date),
             "subscription": from_union([from_none, from_str], self.subscription),
             "parent": from_union([from_none, from_int], self.parent),
