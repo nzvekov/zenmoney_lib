@@ -20,6 +20,7 @@ class TypeEnum(Enum):
     debt = "debt"
     deposit = "deposit"
     loan = "loan"
+    emoney = "emoney"
 
 
 class State(Enum):
