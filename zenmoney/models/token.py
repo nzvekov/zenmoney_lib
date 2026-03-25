@@ -1,14 +1,15 @@
 import time
-from dataclasses import dataclass
+
+from pydantic import BaseModel, Field
 
 
-@dataclass
-class Token:
+class Token(BaseModel):
     access_token: str
     token_type: str
     expires_in: int
     refresh_token: str
+    received_at: int = Field(default_factory=lambda: int(time.time()))
 
     @property
     def is_valid(self) -> bool:
-        return int(time.time()) < self.expires_in
+        return int(time.time()) < self.received_at + self.expires_in
