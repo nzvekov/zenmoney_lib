@@ -1,6 +1,5 @@
 from http import HTTPStatus
-from typing import Optional
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 
 from .base import BaseZenmoneyRequest
 from .constant import AUTH_URL, DEFAULT_TIMEOUT, REDIRECT_URL, TOKEN_URL
@@ -27,7 +26,7 @@ class ZenmoneyOAuth2(BaseZenmoneyRequest):
         self.consumer_secret = consumer_secret
         self.username = username
         self.password = password
-        self._token: Optional[Token] = None
+        self._token: Token | None = None
         self._token_url = token_url
         self._auth_url = auth_url
         self._redirect_url = redirect_url
@@ -43,11 +42,11 @@ class ZenmoneyOAuth2(BaseZenmoneyRequest):
         response = self._post(
             self._token_url,
             data={
-                'grant_type': 'authorization_code',
-                'client_id': self.consumer_key,
-                'client_secret': self.consumer_secret,
-                'code': code,
-                'redirect_uri': REDIRECT_URL,
+                "grant_type": "authorization_code",
+                "client_id": self.consumer_key,
+                "client_secret": self.consumer_secret,
+                "code": code,
+                "redirect_uri": self._redirect_url,
             },
         )
         if response.status_code != HTTPStatus.OK:
@@ -59,27 +58,30 @@ class ZenmoneyOAuth2(BaseZenmoneyRequest):
         self._get(
             self._auth_url,
             params={
-                'response_type': 'code',
-                'client_id': self.consumer_key,
-                'redirect_uri': REDIRECT_URL,
+                "response_type": "code",
+                "client_id": self.consumer_key,
+                "redirect_uri": self._redirect_url,
             },
         )
         response = self._post(
             self._auth_url,
             json={
-                'username': self.username,
-                'password': self.password,
-                'auth_type_password': 'Sign in',
+                "username": self.username,
+                "password": self.password,
+                "auth_type_password": "Sign in",
             },
             allow_redirects=False,
         )
         if response.status_code != HTTPStatus.FOUND:
             raise ZenmoneyRequestError("Authorization failed")
-        code_redirect = response.next.url
+        code_redirect = response.headers.get("Location")
+        if not code_redirect:
+            raise ZenmoneyRequestError("Authorization redirect has no Location header")
         code_query = urlparse(code_redirect).query
-        code_dict = dict(x.split('=') for x in code_query.split('&'))
-        if not code_dict.get('code', False):
+        code_dict = parse_qs(code_query)
+        code = code_dict.get("code", [None])[0]
+        if not code:
             raise ZenmoneyRequestError(
                 f"User authorization redirect url {code_redirect} does not contain 'code' parameter",
             )
-        return code_dict.get('code')
+        return code
