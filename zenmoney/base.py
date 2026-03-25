@@ -5,7 +5,7 @@ from .constant import DEFAULT_TIMEOUT
 from .exception import ZenmoneyRequestError
 
 
-class BaseZenmoneyRequest(object):
+class BaseZenmoneyRequest:
     def __init__(self, timeout: float | tuple[float, float] | tuple[float, None] | None = DEFAULT_TIMEOUT):
         self.session = requests.Session()
         self.timeout = timeout
@@ -19,7 +19,7 @@ class BaseZenmoneyRequest(object):
             raise ZenmoneyRequestError(f"Request error: {err}") from err
 
     def _get(self, url: str, **kwargs) -> requests.Response:
-        return self._request('GET', url, **kwargs)
+        return self._request("GET", url, **kwargs)
 
     def _post(self, url: str, **kwargs) -> requests.Response:
-        return self._request('POST', url, **kwargs)
+        return self._request("POST", url, **kwargs)

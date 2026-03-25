@@ -1,8 +1,6 @@
 import pytest
-from datetime import datetime
 
-from zenmoney.models import Diff, Tag, User, Account, Transaction
-from zenmoney.models.utils import check_dict_type
+from zenmoney.models import Diff
 
 
 class TestDiff:
@@ -11,7 +9,7 @@ class TestDiff:
     def test_diff_creation(self, sample_diff_data):
         """Проверяет создание Diff объекта"""
         diff = Diff.from_dict(sample_diff_data)
-        
+
         assert diff.server_timestamp == sample_diff_data["serverTimestamp"]
         assert diff.current_client_timestamp == sample_diff_data["currentClientTimestamp"]
         assert len(diff.tag) == 1
@@ -31,7 +29,7 @@ class TestDiff:
             "currentClientTimestamp": 1234567890,
         }
         diff = Diff.from_dict(data)
-        
+
         assert diff.server_timestamp == data["serverTimestamp"]
         assert diff.current_client_timestamp == data["currentClientTimestamp"]
         assert diff.tag == []
@@ -59,7 +57,7 @@ class TestDiff:
         """Проверяет преобразование Diff объекта в словарь"""
         diff = Diff.from_dict(sample_diff_data)
         result = diff.to_dict()
-        
+
         assert result["serverTimestamp"] == sample_diff_data["serverTimestamp"]
         assert result["currentClientTimestamp"] == sample_diff_data["currentClientTimestamp"]
         assert len(result["tag"]) == 1
@@ -76,7 +74,7 @@ class TestDiff:
         }
         diff = Diff.from_dict(data)
         result = diff.to_dict()
-        
+
         assert result["serverTimestamp"] == data["serverTimestamp"]
         assert result["currentClientTimestamp"] == data["currentClientTimestamp"]
         assert "tag" not in result
@@ -104,11 +102,11 @@ class TestDiff:
             "user": [sample_user_data],
         }
         diff = Diff.from_dict(data)
-        
+
         assert diff.server_timestamp == data["serverTimestamp"]
         assert diff.current_client_timestamp == data["currentClientTimestamp"]
         assert len(diff.tag) == 1
         assert len(diff.user) == 1
         assert diff.account == []
         assert diff.transaction == []
-        assert diff.force_fetch is None 
+        assert diff.force_fetch is None
