@@ -1,5 +1,6 @@
-from dataclasses import dataclass
-from typing import List
+import time
+
+from pydantic import BaseModel, Field, model_validator
 
 from .account import Account
 from .budget import Budget
@@ -13,84 +14,77 @@ from .reminder_marker import ReminderMarker
 from .tag import Tag
 from .transaction import Transaction
 from .user import User
-from .utils import (
-    check_dict_type,
-    check_object_class_name_list,
-    from_int,
-    from_list,
-    to_class,
-)
+from .utils import check_object_class_name_list, remove_empty_attributes
 
 
-@dataclass
-class Diff:
-    server_timestamp: int
-    current_client_timestamp: int
-    tag: List[Tag] | None = None
-    user: List[User] | None = None
-    budget: List[Budget] | None = None
-    account: List[Account] | None = None
-    company: List[Company] | None = None
-    country: List[Country] | None = None
-    merchant: List[Merchant] | None = None
-    reminder: List[Reminder] | None = None
-    instrument: List[Instrument] | None = None
-    transaction: List[Transaction] | None = None
-    reminder_marker: List[ReminderMarker] | None = None
-    deletion: List[Deletion] | None = None
-    force_fetch: List[str] | None = None
+class Diff(BaseModel):
+    server_timestamp: int = Field(alias="serverTimestamp")
+    current_client_timestamp: int = Field(alias="currentClientTimestamp")
+    tag: list[Tag] = Field(default_factory=list)
+    user: list[User] = Field(default_factory=list)
+    budget: list[Budget] = Field(default_factory=list)
+    account: list[Account] = Field(default_factory=list)
+    company: list[Company] = Field(default_factory=list)
+    country: list[Country] = Field(default_factory=list)
+    merchant: list[Merchant] = Field(default_factory=list)
+    reminder: list[Reminder] = Field(default_factory=list)
+    instrument: list[Instrument] = Field(default_factory=list)
+    transaction: list[Transaction] = Field(default_factory=list)
+    reminder_marker: list[ReminderMarker] = Field(default_factory=list, alias="reminderMarker")
+    deletion: list[Deletion] = Field(default_factory=list)
+    force_fetch: list[str] | None = Field(None, alias="forceFetch")
 
-    def __post_init__(self):
-        if self.force_fetch:
-            if not isinstance(self.force_fetch, list):
-                raise TypeError(f"Expected list, got {type(self.force_fetch).__name__}")
+    model_config = {"populate_by_name": True}
 
+    @model_validator(mode="after")
+    def validate_force_fetch(self) -> "Diff":
+        if self.force_fetch is not None:
             for obj in self.force_fetch:
                 check_object_class_name_list(obj)
+        return self
 
-    @staticmethod
-    def from_dict(obj: dict) -> 'Diff':
-        check_dict_type(obj)
-
-        return Diff(
-            server_timestamp=from_int(obj.get("serverTimestamp")),
-            current_client_timestamp=from_int(obj.get("currentClientTimestamp")),
-            tag=from_list(Tag.from_dict, obj.get("tag")),
-            user=from_list(User.from_dict, obj.get("user")),
-            budget=from_list(Budget.from_dict, obj.get("budget")),
-            account=from_list(Account.from_dict, obj.get("account")),
-            company=from_list(Company.from_dict, obj.get("company")),
-            country=from_list(Country.from_dict, obj.get("country")),
-            merchant=from_list(Merchant.from_dict, obj.get("merchant")),
-            reminder=from_list(Reminder.from_dict, obj.get("reminder")),
-            instrument=from_list(Instrument.from_dict, obj.get("instrument")),
-            transaction=from_list(Transaction.from_dict, obj.get("transaction")),
-            reminder_marker=from_list(ReminderMarker.from_dict, obj.get("reminderMarker")),
-            deletion=from_list(Deletion.from_dict, obj.get("deletion")),
-            force_fetch=obj.get("forceFetch"),
-        )
+    @classmethod
+    def from_dict(cls, obj: dict) -> "Diff":
+        if not isinstance(obj, dict):
+            raise TypeError(f"Expected dict, got {type(obj).__name__}")
+        force_fetch = obj.get("forceFetch")
+        if force_fetch is not None and not isinstance(force_fetch, list):
+            raise TypeError(f"Expected list for forceFetch, got {type(force_fetch).__name__}")
+        normalized = {
+            "serverTimestamp": obj["serverTimestamp"],
+            "currentClientTimestamp": obj.get("currentClientTimestamp", int(time.time())),
+            "tag": obj.get("tag") or [],
+            "user": obj.get("user") or [],
+            "budget": obj.get("budget") or [],
+            "account": obj.get("account") or [],
+            "company": obj.get("company") or [],
+            "country": obj.get("country") or [],
+            "merchant": obj.get("merchant") or [],
+            "reminder": obj.get("reminder") or [],
+            "instrument": obj.get("instrument") or [],
+            "transaction": obj.get("transaction") or [],
+            "reminderMarker": obj.get("reminderMarker") or [],
+            "deletion": obj.get("deletion") or [],
+            "forceFetch": obj.get("forceFetch"),
+        }
+        return cls.model_validate(normalized)
 
     def to_dict(self) -> dict:
-        return remove_empty_attributes(
-            data={
-                "serverTimestamp": from_int(self.server_timestamp),
-                "currentClientTimestamp": from_int(self.current_client_timestamp),
-                "tag": from_list(lambda x: to_class(Tag, x), self.tag),
-                "user": from_list(lambda x: to_class(User, x), self.user),
-                "budget": from_list(lambda x: to_class(Budget, x), self.budget),
-                "account": from_list(lambda x: to_class(Account, x), self.account),
-                "company": from_list(lambda x: to_class(Company, x), self.company),
-                "country": from_list(lambda x: to_class(Country, x), self.country),
-                "merchant": from_list(lambda x: to_class(Merchant, x), self.merchant),
-                "reminder": from_list(lambda x: to_class(Reminder, x), self.reminder),
-                "instrument": from_list(lambda x: to_class(Instrument, x), self.instrument),
-                "transaction": from_list(lambda x: to_class(Transaction, x), self.transaction),
-                "reminderMarker": from_list(lambda x: to_class(ReminderMarker, x), self.reminder_marker),
-                "deletion": from_list(lambda x: to_class(Deletion, x), self.deletion),
-                "forceFetch": self.force_fetch,
-            }
-        )
-
-
-def remove_empty_attributes(data: dict) -> dict:
-    return {k: v for k, v in data.items() if v not in ([], {}, None)}
+        data = {
+            "serverTimestamp": self.server_timestamp,
+            "currentClientTimestamp": self.current_client_timestamp,
+            "tag": [t.model_dump(by_alias=True, mode="json") for t in self.tag],
+            "user": [u.model_dump(by_alias=True) for u in self.user],
+            "budget": [b.model_dump(by_alias=True, mode="json") for b in self.budget],
+            "account": [a.model_dump(by_alias=True, mode="json") for a in self.account],
+            "company": [c.model_dump(by_alias=True) for c in self.company],
+            "country": [c.model_dump(by_alias=True, mode="json") for c in self.country],
+            "merchant": [m.model_dump(by_alias=True, mode="json") for m in self.merchant],
+            "reminder": [r.model_dump(by_alias=True, mode="json") for r in self.reminder],
+            "instrument": [i.model_dump(by_alias=True) for i in self.instrument],
+            "transaction": [t.model_dump(by_alias=True, mode="json") for t in self.transaction],
+            "reminderMarker": [rm.model_dump(by_alias=True, mode="json") for rm in self.reminder_marker],
+            "deletion": [d.to_dict() for d in self.deletion],
+            "forceFetch": self.force_fetch,
+        }
+        return remove_empty_attributes(data)

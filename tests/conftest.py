@@ -1,10 +1,10 @@
-import pytest
-from unittest.mock import MagicMock
 import time
-from datetime import datetime
+from unittest.mock import MagicMock
 
+import pytest
+
+from zenmoney.models import Token
 from zenmoney.oauth2 import ZenmoneyOAuth2
-from zenmoney.models import Token, Diff, Tag, User, Account, Transaction
 
 
 @pytest.fixture
@@ -12,18 +12,18 @@ def mock_response():
     """Создает мок ответа от сервера"""
     response = MagicMock()
     response.raise_for_status.return_value = None
+    response.json.return_value = {}
     return response
 
 
 @pytest.fixture
 def valid_token_data():
-    """Данные для создания валидного токена"""
-    current_time = int(time.time())
     return {
-        'access_token': 'test_access_token',
-        'token_type': 'bearer',
-        'expires_in': current_time + 3600,  # Expires in 1 hour
-        'refresh_token': 'test_refresh_token'
+        "access_token": "test_access_token",
+        "token_type": "bearer",
+        "expires_in": 3600,
+        "refresh_token": "test_refresh_token",
+        "received_at": int(time.time()),
     }
 
 
@@ -32,10 +32,11 @@ def expired_token_data():
     """Данные для создания истекшего токена"""
     current_time = int(time.time())
     return {
-        'access_token': 'test_access_token',
-        'token_type': 'bearer',
-        'expires_in': current_time - 1,  # Expired 1 second ago
-        'refresh_token': 'test_refresh_token'
+        "access_token": "test_access_token",
+        "token_type": "bearer",
+        "expires_in": 3600,
+        "refresh_token": "test_refresh_token",
+        "received_at": current_time - 7200,
     }
 
 
@@ -49,10 +50,7 @@ def mock_token(valid_token_data):
 def oauth_client():
     """Создает клиент OAuth2 с тестовыми данными"""
     return ZenmoneyOAuth2(
-        consumer_key='test_key',
-        consumer_secret='test_secret',
-        username='test_user',
-        password='test_pass'
+        consumer_key="test_key", consumer_secret="test_secret", username="test_user", password="test_pass"
     )
 
 
@@ -60,7 +58,7 @@ def oauth_client():
 def sample_tag_data():
     """Данные для создания тегов"""
     return {
-        "id": "123e4567-e89b-12d3-a456-426614174000",  # Валидный UUID
+        "id": "123e4567-e89b-12d3-a456-426614174000",
         "title": "Test Tag",
         "changed": 1234567890,
         "user": 1,
@@ -84,10 +82,12 @@ def sample_user_data():
         "changed": 1234567890,
         "login": "test_user",
         "currency": 643,
+        "country": 643,
         "countryCode": "RU",
         "parent": None,
         "company": None,
         "paidTill": None,
+        "monthStartDay": 1,
         "subscription": None,
         "email": "test@example.com",
         "planSettings": "free",
@@ -213,7 +213,7 @@ def sample_reminder_marker_data():
         "income": 0,
         "notify": False,
         "changed": 1714516510,
-        "comment": "Подписка \"Tinkoff Pro\"",
+        "comment": 'Подписка "Tinkoff Pro"',
         "outcome": 1990,
         "merchant": None,
         "reminder": "b65bd69f-8024-4e60-a2e1-83422955f4c4",
@@ -221,7 +221,7 @@ def sample_reminder_marker_data():
         "incomeAccount": "b88e8d81-2fb8-4d50-966e-95c0a5d7a808",
         "outcomeAccount": "b88e8d81-2fb8-4d50-966e-95c0a5d7a808",
         "incomeInstrument": 2,
-        "outcomeInstrument": 2
+        "outcomeInstrument": 2,
     }
 
 
@@ -238,12 +238,21 @@ def sample_budget_data():
         "incomeLock": False,
         "outcomeLock": False,
         "isIncomeForecast": False,
-        "isOutcomeForecast": True
+        "isOutcomeForecast": True,
     }
 
 
 @pytest.fixture
-def sample_diff_data(sample_tag_data, sample_user_data, sample_account_data, sample_transaction_data, sample_merchant_data, sample_reminder_data, sample_reminder_marker_data, sample_budget_data):
+def sample_diff_data(
+    sample_tag_data,
+    sample_user_data,
+    sample_account_data,
+    sample_transaction_data,
+    sample_merchant_data,
+    sample_reminder_data,
+    sample_reminder_marker_data,
+    sample_budget_data,
+):
     """Данные для создания Diff объекта"""
     current_time = int(time.time())
     return {
@@ -252,13 +261,15 @@ def sample_diff_data(sample_tag_data, sample_user_data, sample_account_data, sam
         "tag": [sample_tag_data],
         "user": [sample_user_data],
         "account": [sample_account_data],
-        "transaction": [{
-            **sample_transaction_data,
-            "viewed": False  # Добавляем поле viewed в транзакцию
-        }],
+        "transaction": [
+            {
+                **sample_transaction_data,
+                "viewed": False,
+            }
+        ],
         "merchant": [sample_merchant_data],
         "reminder": [sample_reminder_data],
         "reminderMarker": [sample_reminder_marker_data],
         "budget": [sample_budget_data],
         "forceFetch": ["tag", "user"],
-    } 
+    }
