@@ -20,7 +20,7 @@ pip install zenmoney-py
 
 ## Requirements
 
-- Python 3.12 or higher
+- Python 3.10 or higher
 - requests >= 2.32.3
 
 ## Quick Start
@@ -93,7 +93,7 @@ The `suggest` endpoint helps with transaction categorization and payee suggestio
 Example usage:
 ```python
 # Get suggestions for a transaction
-suggestions = zenmoney_client.suggest({
+suggestions = zenmoney_client.raw_suggest({
     "payee": "McDonalds"
 })
 ```
@@ -102,22 +102,41 @@ suggestions = zenmoney_client.suggest({
 
 To set up the development environment:
 
-1. Clone the repository:
+1. [Install uv](https://docs.astral.sh/uv/getting-started/installation/) if you haven't already.
+
+2. Clone the repository:
 ```bash
 git clone https://github.com/cooper30/zenmoney_lib.git
 cd zenmoney_lib
 ```
 
-2. Create and activate a virtual environment:
+3. Install dependencies and create virtual environment:
 ```bash
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+uv sync
 ```
 
-3. Install development dependencies:
+4. Run tests:
 ```bash
-pip install -r requirements.txt
+uv run pytest
 ```
+
+5. Lint and format code:
+```bash
+uv run ruff check .
+uv run ruff format .
+```
+
+6. Install pre-commit hooks (optional, but recommended):
+```bash
+uv run pre-commit install
+```
+After that, ruff and pytest will run automatically on each commit.
+
+## CI
+
+GitHub Actions workflows:
+- **codestyle** — ruff check + ruff format (on PR to develop/master)
+- **test** — pytest on Python 3.10, 3.11, 3.12 (on PR and push to develop/master)
 
 ## License
 

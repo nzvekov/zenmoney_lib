@@ -1,91 +1,36 @@
-from dataclasses import dataclass
 from datetime import datetime
-from typing import List
 from uuid import UUID
 
+from pydantic import BaseModel, Field, field_validator
+
+from .base import DictMixin
 from .enums import Interval
-from .utils import (
-    check_dict_type,
-    from_bool,
-    from_datetime,
-    from_float,
-    from_int,
-    from_list,
-    from_none,
-    from_str,
-    from_union,
-    to_enum,
-    to_float,
-)
 
 
-@dataclass
-class Reminder:
+class Reminder(BaseModel, DictMixin):
     id: UUID
     user: int
     income: float
     outcome: float
-    income_account: UUID
-    outcome_account: UUID
-    income_instrument: int
-    outcome_instrument: int
+    income_account: UUID = Field(alias="incomeAccount")
+    outcome_account: UUID = Field(alias="outcomeAccount")
+    income_instrument: int = Field(alias="incomeInstrument")
+    outcome_instrument: int = Field(alias="outcomeInstrument")
     changed: int
-    step: int
+    step: int | None = None
     notify: bool
-    points: List[int]
-    start_date: datetime
-    tag: List[UUID] | None = None
+    points: list[int] = Field(default_factory=list)
+    start_date: datetime = Field(alias="startDate")
+    tag: list[UUID] | None = None
     payee: str | None = None
     comment: str | None = None
-    end_date: datetime | None = None
+    end_date: datetime | None = Field(None, alias="endDate")
     interval: Interval | None = None
     merchant: UUID | None = None
 
-    @staticmethod
-    def from_dict(obj: dict) -> 'Reminder':
-        check_dict_type(obj)
+    model_config = {"populate_by_name": True}
 
-        return Reminder(
-            id=UUID(obj.get("id")),
-            step=from_int(obj.get("step")),
-            user=from_int(obj.get("user")),
-            income=from_float(obj.get("income")),
-            notify=from_bool(obj.get("notify")),
-            points=from_list(from_int, obj.get("points")),
-            changed=from_int(obj.get("changed")),
-            outcome=from_float(obj.get("outcome")),
-            start_date=from_datetime(obj.get("startDate")),
-            income_account=UUID(obj.get("incomeAccount")),
-            outcome_account=UUID(obj.get("outcomeAccount")),
-            income_instrument=from_int(obj.get("incomeInstrument")),
-            outcome_instrument=from_int(obj.get("outcomeInstrument")),
-            tag=from_union([lambda x: from_list(lambda x: UUID(x), x), from_none], obj.get("tag")),
-            payee=from_union([from_none, from_str], obj.get("payee")),
-            comment=from_union([from_none, from_str], obj.get("comment")),
-            end_date=from_union([from_none, from_datetime], obj.get("endDate")),
-            interval=from_union([from_none, Interval], obj.get("interval")),
-            merchant=from_union([from_none, lambda x: UUID(x)], obj.get("merchant")),
-        )
-
-    def to_dict(self) -> dict:
-        return {
-            "id": str(self.id),
-            "step": from_int(self.step),
-            "user": from_int(self.user),
-            "income": to_float(self.income),
-            "notify": from_bool(self.notify),
-            "points": from_list(from_int, self.points),
-            "changed": from_int(self.changed),
-            "outcome": to_float(self.outcome),
-            "startDate": self.start_date.isoformat(),
-            "incomeAccount": str(self.income_account),
-            "outcomeAccount": str(self.outcome_account),
-            "incomeInstrument": from_int(self.income_instrument),
-            "outcomeInstrument": from_int(self.outcome_instrument),
-            "tag": from_union([lambda x: from_list(lambda x: str(x), x), from_none], self.tag),
-            "payee": from_union([from_none, from_str], self.payee),
-            "comment": from_union([from_none, from_str], self.comment),
-            "endDate": from_union([from_none, lambda x: x.isoformat()], self.end_date),
-            "interval": from_union([from_none, lambda x: to_enum(Interval, x)], self.interval),
-            "merchant": from_union([from_none, lambda x: str(x)], self.merchant),
-        }
+    @field_validator("points", mode="before")
+    @classmethod
+    def points_none_to_empty(cls, v: object) -> list:
+        return [] if v is None else v
