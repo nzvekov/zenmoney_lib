@@ -1,14 +1,65 @@
 [build-system]
-requires = ["setuptools", "wheel", "requests"]
+requires = ["setuptools>=61", "wheel"]
 build-backend = "setuptools.build_meta"
 
-[tool.black]
-target-version = ['py310']
-skip-string-normalization = true
+[project]
+name = "zenmoney-py"
+version = "2.0.0"
+description = "Library for zenmoney.ru API"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+    { name = "Nikita Zvekov", email = "cooper30@mail.ru" }
+]
+urls = { Repository = "https://github.com/cooper30/zenmoney_lib.git" }
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: MIT License",
+    "Environment :: Console",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "requests>=2.32.3",
+    "pydantic>=2.0",
+]
+
+[dependency-groups]
+dev = [
+    "pre-commit",
+    "pytest",
+    "ruff",
+    "setuptools",
+    "twine",
+    "wheel",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["zenmoney*"]
+
+[tool.ruff]
+target-version = "py310"
 line-length = 120
-extend-exclude = '''
-(
-    versions
-)
-'''
-#preview = true
+exclude = [".env", ".env.template", ".git", "__pycache__", ".venv", "venv", "env", "versions"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+ignore = ["E203", "N806", "N815"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.isort]
+known-first-party = ["zenmoney"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"

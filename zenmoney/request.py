@@ -19,8 +19,8 @@ class ZenmoneyRequest(BaseZenmoneyRequest):
         self._set_headers(token)
 
     def _set_headers(self, token) -> None:
-        self.session.headers['Authorization'] = f"Bearer {token}"
-        self.session.headers['Content-Type'] = 'application/json'
+        self.session.headers["Authorization"] = f"Bearer {token}"
+        self.session.headers["Content-Type"] = "application/json"
 
     def raw_diff(self, data: dict) -> dict:
         return convert_response_to_json(self._post(self._diff_url, json=data))

@@ -1,3 +1,12 @@
+# macOS
+.DS_Store
+
+# Ruff
+.ruff_cache/
+
+# Stray / generated
+path/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
