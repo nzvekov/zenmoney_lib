@@ -29,6 +29,7 @@ dependencies = [
 dev = [
     "pre-commit",
     "pytest",
+    "python-dotenv>=1.2.4",
     "ruff",
     "setuptools",
     "twine",
