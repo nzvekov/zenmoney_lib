@@ -22,6 +22,7 @@ pip install zenmoney-py
 
 - Python 3.10 or higher
 - requests >= 2.32.3
+- httpx >= 0.27 (only for `AsyncZenmoneyRequest`, install with `pip install "zenmoney-py[async]"`)
 
 ## Quick Start
 
@@ -53,6 +54,19 @@ params = Diff(
 
 # Get data from ZenMoney
 data = zenmoney_client.diff(params=params)
+```
+
+## Async usage
+
+`AsyncZenmoneyRequest` has the same methods as `ZenmoneyRequest` (`raw_diff`, `diff`, `raw_suggest`), but they are
+coroutines built on `httpx`. Install the extra with `pip install "zenmoney-py[async]"`. Close the client with `aclose()`
+or use `async with`; one instance belongs to one event loop:
+
+```python
+from zenmoney import AsyncZenmoneyRequest
+
+async with AsyncZenmoneyRequest(access_token) as client:
+    data = await client.diff(Diff(server_timestamp=0, current_client_timestamp=int(time.time())))
 ```
 
 ## Authentication
