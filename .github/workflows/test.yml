@@ -5,10 +5,12 @@ on:
     branches:
       - develop
       - master
+      - main
   push:
     branches:
       - develop
       - master
+      - main
 
 jobs:
   test:
